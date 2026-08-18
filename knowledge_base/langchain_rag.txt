@@ -1,0 +1,57 @@
+# LangChain для RAG
+
+LangChain - это фреймворк для работы с большими языковыми моделями.
+
+## Основные компоненты
+
+### 1. Document Loaders
+Загрузка документов из различных источников:
+- PDF файлы
+- Текстовые файлы
+- Веб-страницы
+- Базы данных
+
+### 2. Embeddings
+Преобразование текста в векторы:
+- HuggingFace (бесплатно, локально)
+- OpenAI (требует API ключ)
+- Cohere
+
+### 3. Vector Stores
+Хранение векторных представлений:
+- ChromaDB (локальное, бесплатное)
+- Pinecone (облачное)
+- Weaviate
+
+### 4. Retrievers
+Поиск релевантных документов по запросу.
+
+### 5. LLM
+Языковые модели:
+- Ollama (локальные модели, бесплатно)
+- OpenAI GPT
+- Anthropic Claude
+
+## RAG цепочка
+
+RAG (Retrieval-Augmented Generation) работает так:
+
+1. Пользователь задаёт вопрос
+2. Система ищет релевантные документы в векторном хранилище
+3. Документы передаются в LLM вместе с вопросом
+4. LLM генерирует ответ на основе контекста
+
+## Пример кода
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+template = """Контекст: {context}
+Вопрос: {question}
+Ответ:"""
+
+prompt = ChatPromptTemplate.from_template(template)
+chain = prompt | llm | StrOutputParser()
+result = chain.invoke({"context": docs, "question": query})
+```

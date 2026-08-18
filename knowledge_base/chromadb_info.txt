@@ -1,0 +1,57 @@
+# ChromaDB - Векторное хранилище
+
+ChromaDB - это бесплатное векторное хранилище с открытым исходным кодом.
+
+## Преимущества
+
+- **Локальное хранение** - работает без интернета
+- **Бесплатно** - не требует подписки
+- **Простота** - минимальная конфигурация
+- **Персистентность** - данные сохраняются на диск
+
+## Установка
+
+```bash
+pip install chromadb
+```
+
+## Использование с LangChain
+
+```python
+from langchain_chroma import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
+vectorstore = Chroma(
+    persist_directory="./chroma_db",
+    embedding_function=embeddings,
+)
+```
+
+## Добавление документов
+
+```python
+documents = [...]  # список Document объектов
+vectorstore.add_documents(documents)
+```
+
+## Поиск
+
+```python
+results = vectorstore.similarity_search("ваш запрос", k=3)
+```
+
+## Очистка
+
+```python
+vectorstore.delete_collection()
+```
+
+## Параметры эмбеддингов
+
+Рекомендуемые модели для embeddings:
+- `sentence-transformers/all-MiniLM-L6-v2` (быстрая, 384 измерения)
+- `sentence-transformers/all-mpnet-base-v2` (качественнее, 768 измерений)
