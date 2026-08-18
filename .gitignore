@@ -1,28 +1,65 @@
 ```
-# Python
+# Dependencies
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
 
-# Database
-chroma_db/
-knowledge_base/
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
 # Environment
 .env
-.env.local
-.env.*
-
-# Dependencies
+.venv
+env/
 venv/
-.venv/
-.envrc
-
-# Logs
-*.log
+ENV/
+.env.bak
+.env.dev
+.env.local
+.env.prod
+.env.staging
+.env.test
+.env.testing
 
 # OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 ```

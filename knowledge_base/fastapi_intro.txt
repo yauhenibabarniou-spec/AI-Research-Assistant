@@ -1,0 +1,54 @@
+# Пример документа для тестирования
+
+Это тестовый документ для AI Research Assistant.
+
+## Установка FastAPI
+
+Для установки FastAPI выполните команду:
+
+```bash
+pip install fastapi
+```
+
+Также вам понадобится ASGI сервер, например uvicorn:
+
+```bash
+pip install "uvicorn[standard]"
+```
+
+## Создание первого приложения
+
+Создайте файл main.py:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+```
+
+## Запуск сервера
+
+Запустите сервер командой:
+
+```bash
+uvicorn main:app --reload
+```
+
+Сервер запустится на http://localhost:8000
+
+## Документация
+
+FastAPI автоматически генерирует документацию:
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## Основные возможности
+
+1. **Автоматическая валидация данных** - Pydantic модели
+2. **Интерактивная документация** - OpenAPI схема
+3. **Асинхронность** - поддержка async/await
+4. **Dependency Injection** - встроенная система зависимостей

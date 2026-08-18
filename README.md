@@ -14,8 +14,10 @@
 
 ## Установка
 
+### Через Poetry (рекомендуется)
+
 ```bash
-pip install -r requirements.txt
+poetry install
 ```
 
 ### Опционально: Ollama для локальной LLM
@@ -32,7 +34,7 @@ pip install -r requirements.txt
 ├── vector_store.py        # Работа с векторным хранилищем
 ├── knowledge_base/        # Папка с документами (PDF/TXT)
 ├── .env                   # Переменные окружения
-└── requirements.txt       # Зависимости
+└── pyproject.toml         # Зависимости Poetry
 ```
 
 ## Настройка
