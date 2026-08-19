@@ -20,6 +20,7 @@ uvicorn = { extras = ["standard"], version = "^0.38" }
 langchain-core = "^0.3"
 langchain-chroma = "^0.2"
 langchain-openai = "^0.3"
+langchain-community = "^0.3"
 
 torch = { version = "~2.9.0", source = "pytorch-cpu" }
 

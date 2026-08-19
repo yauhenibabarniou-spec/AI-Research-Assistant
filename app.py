@@ -1,12 +1,15 @@
 import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from vector_store import VectorStoreManager
+
+load_dotenv()
 
 # Инициализация приложения
 app = FastAPI(
@@ -29,6 +32,13 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     question: str
     k: int = 3  # количество релевантных документов
+
+    @field_validator("k")
+    @classmethod
+    def validate_k(cls, v: int) -> int:
+        if v < 1 or v > 20:
+            raise ValueError("k must be between 1 and 20")
+        return v
 
 
 class QueryResponse(BaseModel):
@@ -158,22 +168,6 @@ def query(request: QueryRequest):
 
         # Получение LLM и создание цепочки
         llm = get_llm()
-
-        if llm is None:
-            # Режим без LLM - просто возвращаем найденные документы
-            answer = f"Найдено {len(relevant_docs)} релевантных фрагментов:\n\n"
-            for i, doc in enumerate(relevant_docs, 1):
-                answer += f"{i}. {doc.page_content[:500]}...\n\n"
-            answer += "\nПримечание: LLM (Ollama) недоступна. Показаны только найденные фрагменты."
-
-            model_used = os.getenv("OLLAMA_MODEL", "llama3.2")
-
-            return QueryResponse(
-                answer=answer,
-                sources=sources,
-                model_used=f"{model_used} (unavailable)",
-            )
-
         chain = create_rag_chain(llm)
 
         # Генерация ответа
@@ -185,8 +179,7 @@ def query(request: QueryRequest):
         )
 
         # Определение использованной модели
-        use_openai = os.getenv("USE_OPENAI", "false").lower() == "true"
-        model_used = "gpt-4o-mini" if use_openai else os.getenv("OLLAMA_MODEL", "llama3.2")
+        model_used = os.getenv("OLLAMA_MODEL", "llama3.2")
 
         return QueryResponse(
             answer=answer,

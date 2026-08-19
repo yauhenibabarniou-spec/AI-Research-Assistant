@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from langchain_chroma import Chroma
@@ -15,6 +16,7 @@ class VectorStoreManager:
         embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
         knowledge_base_dir: str = "./knowledge_base",
     ):
+        self.logger = logging.getLogger(__name__)
         self.persist_directory = persist_directory
         self.knowledge_base_dir = Path(knowledge_base_dir)
 
@@ -36,7 +38,7 @@ class VectorStoreManager:
         documents = []
 
         if not self.knowledge_base_dir.exists():
-            print(f"Папка {self.knowledge_base_dir} не найдена. Создаю...")
+            self.logger.info(f"Папка {self.knowledge_base_dir} не найдена. Создаю...")
             self.knowledge_base_dir.mkdir(parents=True, exist_ok=True)
             return documents
 
@@ -48,32 +50,32 @@ class VectorStoreManager:
                 loader = TextLoader(str(file_path), encoding="utf-8")
                 documents.extend(loader.load())
             else:
-                print(f"Пропущен файл {file_path.name} (не поддерживаемый формат)")
+                self.logger.warning(f"Пропущен файл {file_path.name} (не поддерживаемый формат)")
 
         return documents
 
     def index_documents(self) -> int:
         """Индексация документов в векторном хранилище."""
-        print("Загрузка документов...")
+        self.logger.info("Загрузка документов...")
         documents = self.load_documents()
 
         if not documents:
-            print("Нет документов для индексации.")
+            self.logger.info("Нет документов для индексации.")
             return 0
 
-        print(f"Найдено документов: {len(documents)}")
-        print("Создание эмбеддингов и индексация...")
+        self.logger.info(f"Найдено документов: {len(documents)}")
+        self.logger.info("Создание эмбеддингов и индексация...")
 
         # Добавление документов в векторное хранилище
         self.vectorstore.add_documents(documents)
 
-        print(f"Успешно проиндексировано {len(documents)} документов.")
+        self.logger.info(f"Успешно проиндексировано {len(documents)} документов.")
         return len(documents)
 
     def clear_index(self):
         """Очистка векторного хранилища."""
         self.vectorstore.delete_collection()
-        print("Векторное хранилище очищено.")
+        self.logger.info("Векторное хранилище очищено.")
 
     def get_relevant_documents(self, query: str, k: int = 3) -> list[Document]:
         """Поиск релевантных документов по запросу."""
@@ -82,6 +84,7 @@ class VectorStoreManager:
     def get_document_count(self) -> int:
         """Получение количества документов в хранилище."""
         try:
+            # ponytail: ChromaDB не имеет публичного API для count, приватный доступ необходим
             return self.vectorstore._collection.count()
         except Exception:
             return 0
