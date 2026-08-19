@@ -164,10 +164,9 @@ def query(request: QueryRequest):
             answer = f"Найдено {len(relevant_docs)} релевантных фрагментов:\n\n"
             for i, doc in enumerate(relevant_docs, 1):
                 answer += f"{i}. {doc.page_content[:500]}...\n\n"
-            answer += "\nПримечание: LLM (Ollama/OpenAI) недоступна. Показаны только найденные фрагменты."
+            answer += "\nПримечание: LLM (Ollama) недоступна. Показаны только найденные фрагменты."
 
-            use_openai = os.getenv("USE_OPENAI", "false").lower() == "true"
-            model_used = "gpt-4o-mini" if use_openai else os.getenv("OLLAMA_MODEL", "llama3.2")
+            model_used = os.getenv("OLLAMA_MODEL", "llama3.2")
 
             return QueryResponse(
                 answer=answer,
