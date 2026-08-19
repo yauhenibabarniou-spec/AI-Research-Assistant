@@ -1,17 +1,12 @@
 import os
-from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_community.llms import Ollama
-from langchain_openai import ChatOpenAI
-
 from vector_store import VectorStoreManager
-
 
 # Инициализация приложения
 app = FastAPI(
@@ -28,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Модели данных
 class QueryRequest(BaseModel):
@@ -51,30 +47,17 @@ vector_manager = VectorStoreManager()
 
 def get_llm():
     """Получение LLM модели в зависимости от настроек."""
-    use_openai = os.getenv("USE_OPENAI", "false").lower() == "true"
-    
-    if use_openai:
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY не установлен в .env")
-        
-        return ChatOpenAI(
-            model="gpt-4o-mini",
-            api_key=api_key,
-            temperature=0.7,
-        )
-    else:
-        # Локальная модель через Ollama (бесплатно)
-        ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
-        
-        # Возвращаем конфиг для ленивой инициализации
-        return {
-            "type": "ollama",
-            "base_url": ollama_url,
-            "model": ollama_model,
-            "temperature": 0.7,
-        }
+
+    ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2")
+
+    # Возвращаем конфиг для ленивой инициализации
+    return {
+        "type": "ollama",
+        "base_url": ollama_url,
+        "model": ollama_model,
+        "temperature": 0.7,
+    }
 
 
 def create_rag_chain(llm):
@@ -93,10 +76,11 @@ def create_rag_chain(llm):
 Ответ:"""
 
     prompt = ChatPromptTemplate.from_template(template)
-    
+
     # Если llm это dict (Ollama конфиг), создаём модель лениво
     if isinstance(llm, dict):
         from langchain_community.llms import Ollama
+
         llm_instance = Ollama(
             base_url=llm["base_url"],
             model=llm["model"],
@@ -104,10 +88,10 @@ def create_rag_chain(llm):
         )
     else:
         llm_instance = llm
-    
+
     # Цепочка: контекст + вопрос → промпт → LLM → ответ
     chain = prompt | llm_instance | StrOutputParser()
-    
+
     return chain
 
 
@@ -141,7 +125,7 @@ def reindex_documents(request: ReindexRequest):
     try:
         if request.clear_first:
             vector_manager.clear_index()
-        
+
         count = vector_manager.index_documents()
         return {
             "success": True,
@@ -159,9 +143,7 @@ def query(request: QueryRequest):
 
     try:
         # Поиск релевантных документов
-        relevant_docs = vector_manager.get_relevant_documents(
-            request.question, k=request.k
-        )
+        relevant_docs = vector_manager.get_relevant_documents(request.question, k=request.k)
 
         if not relevant_docs:
             return QueryResponse(
@@ -176,30 +158,32 @@ def query(request: QueryRequest):
 
         # Получение LLM и создание цепочки
         llm = get_llm()
-        
+
         if llm is None:
             # Режим без LLM - просто возвращаем найденные документы
             answer = f"Найдено {len(relevant_docs)} релевантных фрагментов:\n\n"
             for i, doc in enumerate(relevant_docs, 1):
                 answer += f"{i}. {doc.page_content[:500]}...\n\n"
             answer += "\nПримечание: LLM (Ollama/OpenAI) недоступна. Показаны только найденные фрагменты."
-            
+
             use_openai = os.getenv("USE_OPENAI", "false").lower() == "true"
             model_used = "gpt-4o-mini" if use_openai else os.getenv("OLLAMA_MODEL", "llama3.2")
-            
+
             return QueryResponse(
                 answer=answer,
                 sources=sources,
                 model_used=f"{model_used} (unavailable)",
             )
-        
+
         chain = create_rag_chain(llm)
 
         # Генерация ответа
-        answer = chain.invoke({
-            "context": context,
-            "question": request.question,
-        })
+        answer = chain.invoke(
+            {
+                "context": context,
+                "question": request.question,
+            }
+        )
 
         # Определение использованной модели
         use_openai = os.getenv("USE_OPENAI", "false").lower() == "true"
@@ -217,5 +201,5 @@ def query(request: QueryRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

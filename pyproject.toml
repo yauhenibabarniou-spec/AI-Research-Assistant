@@ -29,6 +29,12 @@ python-dotenv = "^1.0"
 requests = "^2.32"
 sentence-transformers = "^5.0"
 
+[tool.poetry.group.dev.dependencies]
+black = "*"
+
+[tool.black]
+line-length = 120
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

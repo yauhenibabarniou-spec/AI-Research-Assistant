@@ -1,11 +1,9 @@
-import os
 from pathlib import Path
-from typing import List, Optional
 
-from langchain_core.documents import Document
+from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+from langchain_core.documents import Document
 
 
 class VectorStoreManager:
@@ -19,7 +17,7 @@ class VectorStoreManager:
     ):
         self.persist_directory = persist_directory
         self.knowledge_base_dir = Path(knowledge_base_dir)
-        
+
         # Инициализация эмбеддингов (локальная модель, бесплатно)
         self.embeddings = HuggingFaceEmbeddings(
             model_name=embedding_model,
@@ -33,10 +31,10 @@ class VectorStoreManager:
             embedding_function=self.embeddings,
         )
 
-    def load_documents(self) -> List[Document]:
+    def load_documents(self) -> list[Document]:
         """Загрузка документов из папки knowledge_base."""
         documents = []
-        
+
         if not self.knowledge_base_dir.exists():
             print(f"Папка {self.knowledge_base_dir} не найдена. Создаю...")
             self.knowledge_base_dir.mkdir(parents=True, exist_ok=True)
@@ -77,9 +75,7 @@ class VectorStoreManager:
         self.vectorstore.delete_collection()
         print("Векторное хранилище очищено.")
 
-    def get_relevant_documents(
-        self, query: str, k: int = 3
-    ) -> List[Document]:
+    def get_relevant_documents(self, query: str, k: int = 3) -> list[Document]:
         """Поиск релевантных документов по запросу."""
         return self.vectorstore.similarity_search(query, k=k)
 
