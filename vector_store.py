@@ -92,6 +92,7 @@ class VectorStoreManager:
 
 if __name__ == "__main__":
     # Пример использования
+    logging.basicConfig(level=logging.INFO)
     manager = VectorStoreManager()
     count = manager.index_documents()
-    print(f"\nВсего документов в хранилище: {manager.get_document_count()}")
+    logging.info(f"Всего документов в хранилище: {manager.get_document_count()}")
