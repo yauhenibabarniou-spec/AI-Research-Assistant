@@ -1,58 +1,118 @@
 import os
+from contextlib import asynccontextmanager
 
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from langchain.chains import create_retrieval_chain
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel, field_validator
+from langchain_ollama import ChatOllama
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings as PydanticBaseSettings
+from pydantic_settings import SettingsConfigDict
 
 from vector_store import VectorStoreManager
 
-load_dotenv()
 
-# Инициализация приложения
-app = FastAPI(
-    title="AI Research Assistant",
-    description="Система поиска и генерации ответов на основе документов",
-    version="1.0.0",
-)
+class Settings(PydanticBaseSettings):
+    """Настройки приложения."""
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+    # Параметры векторного хранилища
+    persist_directory: str = "./chroma_db"
+    knowledge_base_dir: str = "./knowledge_base"
+    chunk_size: int = 800
+    chunk_overlap: int = 120
+    collection_name: str = "documents"
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+
+    # Параметры модели
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.2"
+    temperature: float = 0.7
+
+    # Параметры API
+    host: str = "0.0.0.0"
+    port: int = 8000
+
+    # Параметры CORS
+    allowed_origins: list[str] = ["*"]
+
+    # Параметры кэширования
+    max_context_length: int = 4000
+
+    # Параметры безопасности
+    api_key: str | None = None
+
+    # Параметры Rate Limiting
+    rate_limit: int = 100  # запросов в минуту
 
 
-# Модели данных
+class ReindexRequest(BaseModel):
+    """Запрос на переиндексацию документов."""
+
+    clear_first: bool = False
+
+
 class QueryRequest(BaseModel):
-    question: str
-    k: int = 3  # количество релевантных документов
+    """Запрос на поиск ответа."""
 
-    @field_validator("k")
-    @classmethod
-    def validate_k(cls, v: int) -> int:
-        if v < 1 or v > 20:
-            raise ValueError("k must be between 1 and 20")
-        return v
+    question: str
+    k: int = 4
 
 
 class QueryResponse(BaseModel):
+    """Ответ на запрос пользователя."""
+
     answer: str
     sources: list[str]
     model_used: str
 
 
-class ReindexRequest(BaseModel):
-    clear_first: bool = False
+# Загрузка настроек
+settings = Settings()
 
 
-# Глобальный менеджер векторного хранилища
-vector_manager = VectorStoreManager()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan событий FastAPI для инициализации и очистки."""
+    # Инициализация менеджеров
+    vector_manager = VectorStoreManager(
+        persist_directory=settings.persist_directory,
+        embedding_model=settings.embedding_model,
+        knowledge_base_dir=settings.knowledge_base_dir,
+        chunk_size=settings.chunk_size,
+        chunk_overlap=settings.chunk_overlap,
+        collection_name=settings.collection_name,
+    )
+
+    # Проверка доступности модели
+    if not _check_ollama_availability(settings.ollama_base_url):
+        app.state.ollama_available = False
+    else:
+        app.state.ollama_available = True
+
+    app.state.vector_manager = vector_manager
+
+    yield
+
+    # Очистка при завершении работы
+    if hasattr(app.state.vector_manager, "vectorstore"):
+        app.state.vector_manager.vectorstore = None
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+def _check_ollama_availability(base_url: str) -> bool:
+    """Проверка доступности Ollama."""
+    try:
+        import requests
+
+        response = requests.get(f"{base_url}/api/tags", timeout=5)
+        return response.status_code == 200
+    except Exception:
+        return False
 
 
 def get_llm():
@@ -89,9 +149,7 @@ def create_rag_chain(llm):
 
     # Если llm это dict (Ollama конфиг), создаём модель лениво
     if isinstance(llm, dict):
-        from langchain_community.llms import Ollama
-
-        llm_instance = Ollama(
+        llm_instance = ChatOllama(
             base_url=llm["base_url"],
             model=llm["model"],
             temperature=llm["temperature"],
@@ -110,7 +168,7 @@ def root():
     """Информация о сервисе."""
     return {
         "message": "AI Research Assistant API",
-        "documents_indexed": vector_manager.get_document_count(),
+        "documents_indexed": app.state.vector_manager.get_document_count(),
         "endpoints": {
             "query": "POST /query - задать вопрос",
             "documents": "GET /documents - список документов",
@@ -122,7 +180,7 @@ def root():
 @app.get("/documents")
 def get_documents_info():
     """Информация о загруженных документах."""
-    count = vector_manager.get_document_count()
+    count = app.state.vector_manager.get_document_count()
     return {
         "document_count": count,
         "knowledge_base_dir": "./knowledge_base",
@@ -134,9 +192,9 @@ def reindex_documents(request: ReindexRequest):
     """Переиндексация документов."""
     try:
         if request.clear_first:
-            vector_manager.clear_index()
+            app.state.vector_manager.clear_index()
 
-        count = vector_manager.index_documents()
+        count = app.state.vector_manager.index_documents()
         return {
             "success": True,
             "documents_indexed": count,
@@ -153,7 +211,7 @@ def query(request: QueryRequest):
 
     try:
         # Поиск релевантных документов
-        relevant_docs = vector_manager.get_relevant_documents(request.question, k=request.k)
+        relevant_docs = app.state.vector_manager.get_relevant_documents(request.question, k=request.k)
 
         if not relevant_docs:
             return QueryResponse(
