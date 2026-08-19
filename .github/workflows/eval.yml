@@ -1,0 +1,35 @@
+name: Eval
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Run retrieval eval
+        run: PYTHONPATH=${{ github.workspace }} poetry run python scripts/run_retrieval_eval.py --k 3
+
+      - name: Run unit tests
+        run: PYTHONPATH=${{ github.workspace }} poetry run pytest tests/test_retrieval_metrics.py -v
+
+      - name: Upload eval reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-reports
+          path: |
+            eval/reports/
+            eval/ab_results/
+          retention-days: 7

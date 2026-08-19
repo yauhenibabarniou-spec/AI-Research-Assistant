@@ -31,9 +31,14 @@ pypdf = "^6.0"
 python-dotenv = "^1.0"
 requests = "^2.32"
 sentence-transformers = "^5.0"
+pydantic-settings = "^2.15.0"
+
+pandas = "^2.0.0"
+numpy = ">=2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
+pytest = "^8.0.0"
 
 [tool.black]
 line-length = 120
