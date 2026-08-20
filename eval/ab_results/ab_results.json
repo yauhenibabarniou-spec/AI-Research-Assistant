@@ -1,0 +1,98 @@
+[
+  {
+    "name": "base",
+    "chunk_size": 800,
+    "chunk_overlap": 120,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 3,
+    "score_threshold": 0.0,
+    "metrics": {
+      "hit_at_k": 1.0,
+      "recall_at_k": 0.8125,
+      "mrr": 0.9444444444444445,
+      "ndcg_at_k": 0.8093125948755331,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  },
+  {
+    "name": "small_chunks",
+    "chunk_size": 400,
+    "chunk_overlap": 80,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 3,
+    "score_threshold": 0.0,
+    "metrics": {
+      "hit_at_k": 0.9583333333333334,
+      "recall_at_k": 0.5208333333333334,
+      "mrr": 0.8958333333333334,
+      "ndcg_at_k": 0.7278866135842814,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  },
+  {
+    "name": "large_chunks",
+    "chunk_size": 1200,
+    "chunk_overlap": 200,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 3,
+    "score_threshold": 0.0,
+    "metrics": {
+      "hit_at_k": 0.9583333333333334,
+      "recall_at_k": 0.875,
+      "mrr": 0.8541666666666666,
+      "ndcg_at_k": 0.8102782965506456,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  },
+  {
+    "name": "k_5",
+    "chunk_size": 800,
+    "chunk_overlap": 120,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 5,
+    "score_threshold": 0.0,
+    "metrics": {
+      "hit_at_k": 1.0,
+      "recall_at_k": 0.9791666666666666,
+      "mrr": 0.9444444444444445,
+      "ndcg_at_k": 0.8950961015827889,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  },
+  {
+    "name": "k_7",
+    "chunk_size": 800,
+    "chunk_overlap": 120,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 7,
+    "score_threshold": 0.0,
+    "metrics": {
+      "hit_at_k": 1.0,
+      "recall_at_k": 0.9791666666666666,
+      "mrr": 0.9444444444444445,
+      "ndcg_at_k": 0.8950961015827889,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  },
+  {
+    "name": "strict_threshold",
+    "chunk_size": 800,
+    "chunk_overlap": 120,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "k": 3,
+    "score_threshold": 0.3,
+    "metrics": {
+      "hit_at_k": 0.20833333333333334,
+      "recall_at_k": 0.10416666666666667,
+      "mrr": 0.20833333333333334,
+      "ndcg_at_k": 0.12773899849280382,
+      "queries_evaluated": 24.0
+    },
+    "error": null
+  }
+]

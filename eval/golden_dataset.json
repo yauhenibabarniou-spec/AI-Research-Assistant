@@ -1,0 +1,308 @@
+[
+  {
+    "id": "chromadb_001",
+    "question": "Что такое ChromaDB и каковы его основные преимущества?",
+    "expected_answer": "ChromaDB - это бесплатное векторное хранилище с открытым исходным кодом. Его основные преимущества: локальное хранение (работает без интернета), бесплатность (не требует подписки), простота (минимальная конфигурация), персистентность (данные сохраняются на диск).",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "chromadb_002",
+    "question": "Как установить ChromaDB?",
+    "expected_answer": "Для установки ChromaDB выполните команду: pip install chromadb",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "easy",
+    "category": "installation"
+  },
+  {
+    "id": "chromadb_003",
+    "question": "Как инициализировать ChromaDB с использованием LangChain и HuggingFace embeddings?",
+    "expected_answer": "Для использования ChromaDB с LangChain нужно импортировать Chroma из langchain_chroma и HuggingFaceEmbeddings из langchain_community.embeddings. Затем создать объект HuggingFaceEmbeddings с моделью sentence-transformers/all-MiniLM-L6-v2 и передать его в Chroma с persist_directory.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "medium",
+    "category": "usage"
+  },
+  {
+    "id": "chromadb_004",
+    "question": "Какие команды используются для добавления документов и поиска в ChromaDB?",
+    "expected_answer": "Для добавления документов используется vectorstore.add_documents(documents), где documents - список Document объектов. Для поиска используется vectorstore.similarity_search('ваш запрос', k=3), где k - количество возвращаемых результатов.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "medium",
+    "category": "usage"
+  },
+  {
+    "id": "chromadb_005",
+    "question": "Как очистить коллекцию документов в ChromaDB?",
+    "expected_answer": "Для очистки векторного хранилища используется команда vectorstore.delete_collection().",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "easy",
+    "category": "usage"
+  },
+  {
+    "id": "chromadb_006",
+    "question": "Какие модели эмбеддингов рекомендованы для использования с ChromaDB?",
+    "expected_answer": "Рекомендуемые модели для embeddings: sentence-transformers/all-MiniLM-L6-v2 (быстрая, 384 измерения) и sentence-transformers/all-mpnet-base-v2 (качественнее, 768 измерений).",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "easy",
+    "category": "configuration"
+  },
+  {
+    "id": "chromadb_007",
+    "question": "Что означает персистентность данных в ChromaDB?",
+    "expected_answer": "Персистентность означает, что данные сохраняются на диск и не теряются между сессиями. ChromaDB сохраняет данные в указанной директории persist_directory.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "fastapi_001",
+    "question": "Как установить FastAPI и uvicorn?",
+    "expected_answer": "Для установки FastAPI выполните: pip install fastapi. Также установите ASGI сервер uvicorn: pip install 'uvicorn[standard]'.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "easy",
+    "category": "installation"
+  },
+  {
+    "id": "fastapi_002",
+    "question": "Как создать простое приложение FastAPI?",
+    "expected_answer": "Создайте файл main.py, импортируйте FastAPI, создайте экземпляр app = FastAPI(), добавьте обработчик @app.get('/') возвращающий словарь, например {'Hello': 'World'}.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "easy",
+    "category": "usage"
+  },
+  {
+    "id": "fastapi_003",
+    "question": "Как запустить сервер FastAPI?",
+    "expected_answer": "Запустите сервер командой: uvicorn main:app --reload. Сервер запустится на http://localhost:8000.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "easy",
+    "category": "usage"
+  },
+  {
+    "id": "fastapi_004",
+    "question": "Где находится автоматически генерируемая документация FastAPI?",
+    "expected_answer": "FastAPI автоматически генерирует две версии документации: Swagger UI на http://localhost:8000/docs и ReDoc на http://localhost:8000/redoc.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "easy",
+    "category": "documentation"
+  },
+  {
+    "id": "fastapi_005",
+    "question": "Какие основные возможности предоставляет FastAPI?",
+    "expected_answer": "Основные возможности FastAPI: автоматическая валидация данных через Pydantic модели, интерактивная документация на основе OpenAPI схемы, поддержка асинхронности (async/await), встроенная система Dependency Injection.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "fastapi_006",
+    "question": "Что такое Pydantic модели в контексте FastAPI?",
+    "expected_answer": "Pydantic модели используются для автоматической валидации данных в FastAPI. Они обеспечивают проверку типов и преобразование данных.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "fastapi_007",
+    "question": "Для чего нужен uvicorn в проекте с FastAPI?",
+    "expected_answer": "Uvicorn - это ASGI сервер, который используется для запуска FastAPI приложения. Он обрабатывает асинхронные запросы и обеспечивает высокую производительность.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "langchain_001",
+    "question": "Что такое LangChain?",
+    "expected_answer": "LangChain - это фреймворк для работы с большими языковыми моделями. Он предоставляет инструменты для создания сложных пайплайнов с LLM.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "langchain_002",
+    "question": "Какие типы Document Loaders доступны в LangChain?",
+    "expected_answer": "Document Loaders в LangChain позволяют загружать документы из различных источников: PDF файлы, текстовые файлы, веб-страницы, базы данных.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "components"
+  },
+  {
+    "id": "langchain_003",
+    "question": "Какие провайдеры эмбеддингов поддерживает LangChain?",
+    "expected_answer": "LangChain поддерживает различные провайдеры эмбеддингов: HuggingFace (бесплатно, локально), OpenAI (требует API ключ), Cohere.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "components"
+  },
+  {
+    "id": "langchain_004",
+    "question": "Какие векторные хранилища можно использовать с LangChain?",
+    "expected_answer": "С LangChain можно использовать различные векторные хранилища: ChromaDB (локальное, бесплатное), Pinecone (облачное), Weaviate.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "components"
+  },
+  {
+    "id": "langchain_005",
+    "question": "Что такое RAG и как он работает?",
+    "expected_answer": "RAG (Retrieval-Augmented Generation) работает так: 1. Пользователь задаёт вопрос. 2. Система ищет релевантные документы в векторном хранилище. 3. Документы передаются в LLM вместе с вопросом. 4. LLM генерирует ответ на основе контекста.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "langchain_006",
+    "question": "Как устроена RAG цепочка в LangChain?",
+    "expected_answer": "RAG цепочка в LangChain использует LangChain Expression Language (LCEL): prompt | llm | StrOutputParser(). Контекст документов и вопрос пользователя подставляются в промпт, который передаётся LLM, а результат парсится в строку.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "medium",
+    "category": "usage"
+  },
+  {
+    "id": "langchain_007",
+    "question": "Какой компонент LangChain отвечает за поиск релевантных документов?",
+    "expected_answer": "Retriever - это компонент LangChain, который отвечает за поиск релевантных документов по запросу в векторном хранилище.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "components"
+  },
+  {
+    "id": "langchain_008",
+    "question": "Какие языковые модели можно использовать с LangChain?",
+    "expected_answer": "С LangChain можно использовать различные языковые модели: Ollama (локальные модели, бесплатно), OpenAI GPT, Anthropic Claude.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:0:21d43f8156d8ef8c",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/langchain_rag.txt:652:ef05a5f634f6afcc"
+    ],
+    "source_doc": "langchain_rag.txt",
+    "difficulty": "easy",
+    "category": "components"
+  },
+  {
+    "id": "chromadb_008",
+    "question": "В чём разница между all-MiniLM-L6-v2 и all-mpnet-base-v2 моделями эмбеддингов?",
+    "expected_answer": "all-MiniLM-L6-v2 - быстрая модель с 384 измерениями, all-mpnet-base-v2 - более качественная, но медленная модель с 768 измерениями.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:0:369fed7680d9fcb3",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/chromadb_info.txt:693:b5ea6ccc0d7046e0"
+    ],
+    "source_doc": "chromadb_info.txt",
+    "difficulty": "medium",
+    "category": "configuration"
+  },
+  {
+    "id": "fastapi_008",
+    "question": "Что такое Dependency Injection в FastAPI?",
+    "expected_answer": "Dependency Injection - это встроенная система зависимостей в FastAPI, которая позволяет управлять зависимостями между компонентами приложения.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:0:c54160ab0220f235",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/fastapi_intro.txt:734:916e9510fbbdcdbd"
+    ],
+    "source_doc": "fastapi_intro.txt",
+    "difficulty": "medium",
+    "category": "general"
+  },
+  {
+    "id": "combined_001",
+    "question": "Какой стек технологий используется в проекте AI Research Assistant?",
+    "expected_answer": "В проекте AI Research Assistant используется стек: Python + FastAPI (backend), LangChain (фреймворк для LLM), ChromaDB (векторное хранилище), Ollama (локальная LLM), HuggingFace (эмбеддинги).",
+    "expected_chunk_ids": [],
+    "source_doc": "multiple",
+    "difficulty": "medium",
+    "category": "project"
+  },
+  {
+    "id": "combined_002",
+    "question": "Как работает пайплайн RAG в этом проекте?",
+    "expected_answer": "Пайплайн RAG в проекте работает так: документы загружаются из knowledge_base/, разделяются на чанки (RecursiveCharacterTextSplitter), преобразуются в векторы (HuggingFaceEmbeddings), сохраняются в ChromaDB. При запросе происходит поиск релевантных чанков, которые передаются в LLM (Ollama) для генерации ответа.",
+    "expected_chunk_ids": [],
+    "source_doc": "multiple",
+    "difficulty": "medium",
+    "category": "project"
+  }
+]
