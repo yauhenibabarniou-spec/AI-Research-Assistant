@@ -36,5 +36,10 @@ class Settings(PydanticBaseSettings):
     # Параметры Rate Limiting
     rate_limit: int = 100  # запросов в минуту
 
+    # Параметры гибридного поиска
+    hybrid_bm25_k: int = 10
+    hybrid_rerank_k: int = 5
+    hybrid_alpha: float = 0.6
+
 
 settings = Settings()

@@ -62,8 +62,26 @@ def register_routes(app):
             raise HTTPException(status_code=400, detail="Вопрос не может быть пустым")
 
         try:
+            # Выбор стратегии поиска
+            if request.search_type == "hybrid" and hasattr(app.state, "hybrid_manager"):
+                manager = app.state.hybrid_manager
+                search_type_label = "hybrid"
+
+                # Применяем параметры гибридного поиска из запроса
+                manager.search_type = request.hybrid_search_type
+                manager.bm25_k = request.hybrid_bm25_k
+                manager.vector_k = request.hybrid_vector_k
+                manager.rrf_k = request.hybrid_rrf_k
+            else:
+                manager = app.state.vector_manager
+                search_type_label = "vector"
+
             # Поиск релевантных документов
-            relevant_docs = app.state.vector_manager.get_relevant_documents(request.question, k=request.k)
+            relevant_docs = manager.get_relevant_documents(
+                request.question,
+                k=request.k,
+                score_threshold=request.score_threshold,
+            )
 
             if not relevant_docs:
                 return QueryResponse(
@@ -94,7 +112,7 @@ def register_routes(app):
             return QueryResponse(
                 answer=answer,
                 sources=sources,
-                model_used=model_used,
+                model_used=f"{model_used} ({search_type_label})",
             )
 
         except Exception as e:

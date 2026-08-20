@@ -1,4 +1,5 @@
 import hashlib
+import os
 
 from langchain_core.documents import Document
 
@@ -18,6 +19,8 @@ def _make_doc(source: str, start: int, content: str) -> Document:
 def _expected_id(doc: Document) -> str:
     src = doc.metadata.get("source", "")
     start = doc.metadata.get("start_index", 0)
+    if src and not os.path.isabs(src):
+        src = os.path.abspath(src)
     h = hashlib.sha256(doc.page_content.encode()).hexdigest()[:16]
     return f"{src}:{start}:{h}"
 

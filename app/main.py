@@ -6,6 +6,7 @@ from app.api.routes import register_routes
 from app.core.config import settings
 from app.rag.embeddings import Embeddings
 from app.rag.stores.chroma import ChromaStore
+from app.rag.stores.hybrid import HybridStore
 
 
 def _check_ollama_availability(base_url: str) -> bool:
@@ -26,7 +27,7 @@ async def lifespan(app: FastAPI):
     embeddings = Embeddings(settings.embedding_model)
 
     # Инициализация векторного хранилища
-    vector_manager = ChromaStore(
+    chroma_store = ChromaStore(
         persist_directory=settings.persist_directory,
         embedding_function=embeddings.get_embeddings(),
         knowledge_base_dir=settings.knowledge_base_dir,
@@ -35,9 +36,18 @@ async def lifespan(app: FastAPI):
         collection_name=settings.collection_name,
     )
 
+    # Инициализация гибридного хранилища
+    hybrid_store = HybridStore.from_chroma_store(
+        chroma_store,
+        bm25_k=getattr(settings, "hybrid_bm25_k", 10),
+        rerank_k=getattr(settings, "hybrid_rerank_k", 5),
+        alpha=getattr(settings, "hybrid_alpha", 0.6),
+    )
+
     # Проверка доступности модели
     app.state.ollama_available = _check_ollama_availability(settings.ollama_base_url)
-    app.state.vector_manager = vector_manager
+    app.state.vector_manager = chroma_store
+    app.state.hybrid_manager = hybrid_store
 
     yield
 

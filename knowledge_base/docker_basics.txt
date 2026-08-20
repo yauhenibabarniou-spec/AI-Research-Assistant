@@ -1,0 +1,584 @@
+# Docker: контейнеризация приложений
+
+Docker — это платформа для разработки, доставки и запуска контейнеризированных приложений. Контейнеры позволяют упаковать приложение со всеми его зависимостями в стандартизированный блок программного обеспечения.
+
+## Основные концепции Docker
+
+### Контейнер
+Контейнер — это лёгкий, автономный, исполняемый пакет программного обеспечения, который включает всё необходимое для запуска: код, среду выполнения, системные инструменты, системные библиотеки и настройки.
+
+### Образ (Image)
+Образ — это неизменяемый шаблон, из которого создаются контейнеры. Образы определяются с помощью Dockerfile и могут состоять из нескольких слоёв.
+
+### Dockerfile
+Dockerfile — это текстовый документ, содержащий все команды для сборки образа. Это рецепт для создания Docker-образа.
+
+### Docker Hub
+Docker Hub — это облачный реестр образов Docker, аналогичный GitHub для кода. Здесь можно найти официальные образы популярных программного обеспечения.
+
+### Docker Engine
+Docker Engine — это клиент-серверное приложение с компонентами:
+- **Docker Daemon (dockerd)** — фоновый процесс, управляющий объектами Docker
+- **REST API** — интерфейс для взаимодействия с Daemon
+- **Docker CLI** — командная строка для работы с Docker
+
+### Docker Compose
+Docker Compose — инструмент для определения и запуска многоконтейнерных приложений. Использует YAML-файл для конфигурации сервисов.
+
+## Установка Docker
+
+### Системные требования
+- 64-битная версия Linux, macOS или Windows 10/11
+- Минимум 4 ГБ ОЗУ (рекомендуется 8 ГБ)
+- Поддержка виртуализации
+
+### Установка на Linux (Ubuntu/Debian)
+
+```bash
+# Обновление индекса пакетов
+sudo apt update
+
+# Установка зависимостей
+sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
+
+# Добавление официального GPG-ключа Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Добавление репозитория Docker
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Установка Docker Engine
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Добавление пользователя в группу docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### Установка на macOS
+
+```bash
+# Установка через Homebrew
+brew install --cask docker
+
+# Или скачайте Docker Desktop с официального сайта
+# https://www.docker.com/products/docker-desktop
+```
+
+### Установка на Windows
+
+Скачайте Docker Desktop с официального сайта и запустите установщик. Требуется включить WSL 2.
+
+### Проверка установки
+
+```bash
+docker --version
+docker-compose --version
+docker run hello-world
+```
+
+## Основные команды Docker
+
+### Управление образами
+
+```bash
+docker images                 # Показать все образы
+docker pull <image>           # Загрузить образ из реестра
+docker push <image>           # Отправить образ в реестр
+docker build -t <name> .      # Собрать образ из Dockerfile
+docker rmi <image>            # Удалить образ
+docker tag <source> <target>  # Создать тег для образа
+docker inspect <image>        # Показать подробную информацию об образе
+docker history <image>        # Показать историю слоёв образа
+```
+
+### Управление контейнерами
+
+```bash
+docker run <image>            # Создать и запустить контейнер
+docker run -d <image>         # Запустить в фоновом режиме
+docker run -p 8080:80 <image> # Сопоставить порты
+docker run -v /host:/container <image>  # Подключить том
+docker ps                     # Показать работающие контейнеры
+docker ps -a                  # Показать все контейнеры
+docker start <container>      # Запустить остановленный контейнер
+docker stop <container>       # Остановить контейнер
+docker restart <container>    # Перезапустить контейнер
+docker rm <container>         # Удалить контейнер
+docker logs <container>       # Показать логи контейнера
+docker exec -it <container> bash  # Войти в контейнер
+docker inspect <container>    # Подробная информация о контейнере
+docker stats                  # Статистика использования ресурсов
+```
+
+## Dockerfile: создание образов
+
+### Базовый синтаксис
+
+```dockerfile
+# Комментарий
+FROM <image>:<tag>            # Базовый образ
+LABEL <key>=<value>           # Метаданные образа
+ENV <key>=<value>             # Переменные окружения
+WORKDIR /path/to/workdir      # Рабочая директория
+COPY <source> <destination>   # Копирование файлов
+ADD <source> <destination>    # Копирование с распаковкой архивов
+RUN <command>                 # Выполнение команды при сборке
+CMD ["executable", "param"]   # Команда по умолчанию при запуске
+ENTRYPOINT ["executable"]     # Точка входа в контейнер
+EXPOSE <port>                 # Порт, который слушает контейнер
+VOLUME ["/path"]              # Том для хранения данных
+USER <user>                   # Пользователь для запуска
+ARG <name>=<value>            # Переменная сборки
+ONBUILD <instruction>         # Инструкция для наследующих образов
+STOPSIGNAL <signal>           # Сигнал для остановки контейнера
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1
+```
+
+### Пример Dockerfile для Python приложения
+
+```dockerfile
+# Используем официальный образ Python
+FROM python:3.11-slim
+
+# Устанавливаем метаданные
+LABEL maintainer="admin@example.com"
+LABEL version="1.0"
+LABEL description="Python Flask Application"
+
+# Устанавливаем переменные окружения
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV APP_HOME=/app
+
+# Устанавливаем рабочую директорию
+WORKDIR $APP_HOME
+
+# Устанавливаем системные зависимости
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копируем requirements и устанавливаем зависимости
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем исходный код
+COPY . .
+
+# Создаём непривилегированного пользователя
+RUN addgroup --system app && adduser --system --group app
+USER app
+
+# Открываем порт
+EXPOSE 8000
+
+# Команда запуска
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+```
+
+### Многоэтапная сборка
+
+Многоэтапная сборка позволяет создавать маленькие и безопасные образы:
+
+```dockerfile
+# Этап 1: сборка
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Этап 2: продакшен
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+## Docker Compose
+
+Docker Compose определяет многоконтейнерные приложения в YAML-файле.
+
+### Пример docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/myapp
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=myapp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+### Основные команды Docker Compose
+
+```bash
+docker-compose up              # Запустить все сервисы
+docker-compose up -d           # Запустить в фоне
+docker-compose down            # Остановить и удалить контейнеры
+docker-compose ps              # Показать статус сервисов
+docker-compose logs            # Показать логи
+docker-compose logs -f web     # Логи конкретного сервиса
+docker-compose exec web bash   # Выполнить команду в контейнере
+docker-compose build           # Пересобрать образы
+docker-compose restart         # Перезапустить сервисы
+docker-compose scale web=3     # Запустить 3 экземпляра web
+```
+
+## Сети в Docker
+
+Docker предоставляет несколько типов сетей для контейнеров:
+
+### Типы сетей
+
+**bridge** — сеть моста, используется по умолчанию. Контейнеры могут общаться через IP-адреса.
+
+**host** — контейнер использует сетевой стек хоста. Нет изоляции сети.
+
+**none** — контейнер не имеет сетевого интерфейса. Полная изоляция.
+
+**overlay** — сеть для Docker Swarm, позволяет контейнерам на разных хостах общаться.
+
+**macvlan** — назначает MAC-адрес контейнеру, делая его видимым как физическое устройство в сети.
+
+### Управление сетями
+
+```bash
+docker network ls                     # Показать все сети
+docker network create <network-name>  # Создать сеть
+docker network inspect <network>      # Информация о сети
+docker network connect <network> <container>  # Подключить контейнер
+docker network disconnect <network> <container>  # Отключить контейнер
+docker network rm <network>           # Удалить сеть
+```
+
+## Тома и хранилище данных
+
+Docker предоставляет несколько способов сохранения данных:
+
+### Типы томов
+
+**Bind mounts** — монтирование конкретного пути на хосте:
+```bash
+docker run -v /host/path:/container/path image
+```
+
+**Named volumes** — управляемые Docker тома:
+```bash
+docker run -v volume_name:/container/path image
+docker volume create volume_name
+docker volume ls
+docker volume inspect volume_name
+docker volume rm volume_name
+```
+
+**tmpfs mounts** — временные файловые системы в памяти:
+```bash
+docker run --tmpfs /container/path image
+```
+
+### Примеры использования томов
+
+```bash
+# База данных
+docker run -v pgdata:/var/lib/postgresql/data postgres
+
+# Логи приложения
+docker run -v app-logs:/app/logs myapp
+
+# Конфигурационные файлы
+docker run -v ./config:/app/config myapp
+```
+
+## Docker Swarm
+
+Docker Swarm — это встроенный инструмент для оркестрации контейнеров.
+
+### Основные концепции
+
+- **Node** — экземпляр Docker Engine в swarm
+- **Service** — определение контейнеров, которые нужно запустить
+- **Task** — единица работы, выполняемая в контейнере
+- **Manager node** — управляет swarm, принимает решения
+- **Worker node** — выполняет задачи
+
+### Основные команды
+
+```bash
+docker swarm init              # Инициализировать swarm
+docker swarm join-token worker # Получить токен для присоединения
+docker service create --name web --replicas 3 nginx
+docker service ls              # Показать сервисы
+docker service ps web          # Показать задачи сервиса
+docker service scale web=5     # Масштабировать сервис
+docker node ls                 # Показать узлы swarm
+```
+
+## Мониторинг и отладка
+
+### Просмотр информации о контейнерах
+
+```bash
+docker ps                      # Работающие контейнеры
+docker ps -a                   # Все контейнеры
+docker stats                   # Статистика использования ресурсов в реальном времени
+docker inspect <container>     # Подробная JSON-информация
+docker top <container>         # Процессы внутри контейнера
+docker logs <container>        # Логи контейнера
+docker logs -f <container>     # Логи в реальном времени
+docker logs --tail 100 <container>  # Последние 100 строк
+```
+
+### Отладка проблем
+
+```bash
+docker exec -it <container> sh        # Войти в контейнер
+docker exec -it <container> bash       # Для Alpine/Ubuntu
+docker cp <container>:/path/file ./   # Копирование файлов из контейнера
+docker diff <container>               # Изменения файловой системы
+docker events                         # События Docker в реальном времени
+docker system df                       # Использование диска
+docker system prune                    # Очистка неиспользуемых ресурсов
+```
+
+## Безопасность Docker
+
+### Лучшие практики безопасности
+
+1. **Не запускайте контейнеры от root**
+2. **Используйте официальные образы**
+3. **Регулярно обновляйте образы**
+4. **Используйте минимальные базовые образы**
+5. **Сканируйте образы на уязвимости**
+6. **Ограничивайте ресурсы контейнеров**
+7. **Используйте секреты для конфиденциальных данных**
+8. **Настройте сетевую изоляцию**
+9. **Мониторьте контейнеры**
+10. **Используйте Content Trust для подписи образов**
+
+### Сканирование уязвимостей
+
+```bash
+docker scan <image>            # Сканирование с Docker Scout
+trivy image <image>            # Сканирование с Trivy
+```
+
+## Оптимизация образов
+
+### Многоэтапная сборка
+Используйте многоэтапную сборку для уменьшения размера образа.
+
+### Многопоточность слоёв
+Используйте кэширование слоёв, размещая часто изменяющиеся части в конце Dockerfile.
+
+### Выбор базового образа
+Используйте slim или alpine версии образов:
+- `python:3.11-slim` вместо `python:3.11`
+- `node:18-alpine` вместо `node:18`
+
+### Удаление ненужных файлов
+Очищайте кэш пакетного менеджера после установки зависимостей.
+
+## Практические сценарии использования
+
+### Веб-приложение с базой данных
+
+```yaml
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/app
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=app
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+volumes:
+  db_data:
+  redis_data:
+```
+
+### Микросервисная архитектура
+
+```yaml
+version: '3.8'
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "80:8000"
+    environment:
+      - USER_SERVICE_URL=http://user-service:8001
+      - ORDER_SERVICE_URL=http://order-service:8002
+
+  user-service:
+    build: ./user-service
+    environment:
+      - DATABASE_URL=postgresql://user:pass@user-db:5432/users
+
+  order-service:
+    build: ./order-service
+    environment:
+      - DATABASE_URL=postgresql://user:pass@order-db:5432/orders
+
+  user-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=users
+
+  order-db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=orders
+```
+
+## Частые проблемы и решения
+
+### Контейнер не запускается
+```bash
+docker logs <container>        # Проверить логи
+docker inspect <container>     # Проверить конфигурацию
+docker run -it <image> sh      # Запустить интерактивно для отладки
+```
+
+### Проблемы с сетью
+```bash
+docker network ls              # Проверить сети
+docker network inspect <network>  # Проверить конфигурацию сети
+docker exec <container> ping <other-container>  # Проверить связь
+```
+
+### Проблемы с томами
+```bash
+docker volume ls               # Проверить тома
+docker volume inspect <volume> # Проверить конфигурацию
+```
+
+### Недостаток места на диске
+```bash
+docker system df               # Проверить использование диска
+docker system prune -a         # Очистить неиспользуемые ресурсы
+docker image prune -a          # Удалить неиспользуемые образы
+docker volume prune            # Удалить неиспользуемые тома
+```
+
+## Интеграция с CI/CD
+
+### Пример Dockerfile для CI/CD
+
+```dockerfile
+FROM python:3.11-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY --from=builder /root/.local /root/.local
+COPY . .
+ENV PATH=/root/.local/bin:$PATH
+EXPOSE 8000
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+```
+
+### Пример GitHub Actions workflow
+
+```yaml
+name: Docker Build and Push
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
+      - name: Push to registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push myapp:${{ github.sha }}
+```
+
+## Сравнение с аналогами
+
+| Инструмент | Преимущества | Недостатки |
+|------------|-------------|------------|
+| Docker | Стандарт индустрии, большой ecosystem | Сложность для новичков |
+| Podman | Без демона, совместим с Docker CLI | Меньше функций оркестрации |
+| Buildah | Лёгкий, без демона | Только сборка образов |
+| Kaniko | Сборка в Kubernetes | Медленнее Docker |
+| containerd | Минималистичный | Только runtime |
+
+## Заключение
+
+Docker revolutionised the way applications are deployed and managed. By containerizing applications, developers can ensure consistency across development, testing, and production environments. The lightweight nature of containers compared to traditional virtual machines makes Docker an essential tool in modern DevOps practices.
+
+Для продолжения изучения Docker рекомендуется:
+- Попрактиковаться с Dockerfile и docker-compose
+- Изучить Docker Swarm или Kubernetes для оркестрации
+- Изучить безопасность и оптимизацию образов
+- Изучить мониторинг и логирование контейнеров

@@ -1,0 +1,611 @@
+# Тестирование Python приложений
+
+Тестирование — это критически важный этап разработки программного обеспечения, который помогает обеспечить корректность работы кода, предотвратить регрессии и упростить поддержку. В экосистеме Python существует несколько зрелых фреймворков для тестирования.
+
+## Уровни тестирования
+
+### Модульные тесты (Unit Tests)
+Тестирование отдельных компонентов системы в изоляции от остальной части. Обычно тестируют отдельные функции, методы или классы.
+
+### Интеграционные тесты
+Тестирование взаимодействия между несколькими компонентами системы. Например, взаимодействие между базой данных и бизнес-логикой.
+
+### Системные тесты (E2E)
+Тестирование всей системы как целого, имитируя действия реального пользователя.
+
+### Приёмочные тесты
+Проверка соответствия системы требованиям заказчика.
+
+## Фреймворк pytest
+
+pytest — самый популярный фреймворк для тестирования в Python. Он обеспечивает простой синтаксис и мощные возможности.
+
+### Установка
+
+```bash
+pip install pytest pytest-cov
+```
+
+### Базовый пример теста
+
+```python
+# test_calculator.py
+def add(a, b):
+    return a + b
+
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+    assert add(0, 0) == 0
+```
+
+### Запуск тестов
+
+```bash
+pytest                    # Запустить все тесты
+pytest -v                 # Подробный вывод
+pytest -k "test_add"      # Запустить тесты с именем содержащим test_add
+pytest --cov=myapp        # Запустить с измерением покрытия
+pytest -x                 # Остановиться на первой ошибке
+```
+
+## Fixtures в pytest
+
+Fixtures — это функции, которые предоставляют тестовые данные или настраивают окружение для тестов.
+
+### Базовый fixture
+
+```python
+import pytest
+
+@pytest.fixture
+def sample_data():
+    return {"name": "test", "value": 42}
+
+def test_sample_data(sample_data):
+    assert sample_data["name"] == "test"
+    assert sample_data["value"] == 42
+```
+
+### Scope fixtures
+
+```python
+@pytest.fixture(scope="session")
+def database_connection():
+    conn = create_connection()
+    yield conn
+    conn.close()
+
+@pytest.fixture(scope="module")
+def api_client():
+    client = APIClient()
+    yield client
+    client.cleanup()
+```
+
+### Fixture с параметризацией
+
+```python
+@pytest.fixture(params=["sqlite", "postgres", "mysql"])
+def db_connection(request):
+    db_type = request.param
+    conn = create_connection(db_type)
+    yield conn
+    conn.close()
+
+def test_query(db_connection):
+    result = db_connection.query("SELECT 1")
+    assert result == 1
+```
+
+## Параметризация тестов
+
+### @pytest.mark.parametrize
+
+```python
+import pytest
+
+@pytest.mark.parametrize("input,expected", [
+    (2, 4),
+    (3, 9),
+    (4, 16),
+    (-2, 4),
+])
+def test_square(input, expected):
+    assert square(input) == expected
+```
+
+### Несколько параметров
+
+```python
+@pytest.mark.parametrize("a,b,expected", [
+    (2, 3, 5),
+    (-1, 1, 0),
+    (0, 0, 0),
+    (100, 200, 300),
+])
+def test_add(a, b, expected):
+    assert add(a, b) == expected
+```
+
+## Маркеры
+
+Маркеры позволяют помечать тесты и запускать выборочно.
+
+### Стандартные маркеры
+
+```python
+import pytest
+
+@pytest.mark.skip(reason="Не реализовано")
+def test_future_feature():
+    pass
+
+@pytest.mark.skipif(sys.version_info < (3, 9), reason="Требуется Python 3.9+")
+def test_new_feature():
+    pass
+
+@pytest.mark.xfail(reason="Известный баг")
+def test_buggy_feature():
+    assert buggy_function() == expected
+
+@pytest.mark.slow
+def test_slow_operation():
+    time.sleep(10)
+    assert True
+```
+
+### Кастомные маркеры
+
+```python
+# pytest.ini
+[pytest]
+markers =
+    slow: marks tests as slow
+    integration: marks tests as integration tests
+    unit: marks tests as unit tests
+
+# test_example.py
+@pytest.mark.integration
+def test_database_operations():
+    # Интеграционный тест
+    pass
+```
+
+## Мокирование (Mocking)
+
+Мокирование позволяет заменить реальные зависимости на тестовые двойники.
+
+### unittest.mock
+
+```python
+from unittest.mock import Mock, patch, MagicMock
+
+def test_api_call():
+    mock_response = Mock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"id": 1, "name": "Test"}
+    
+    with patch('requests.get', return_value=mock_response):
+        result = fetch_user(1)
+        assert result["name"] == "Test"
+```
+
+### pytest-mock
+
+```python
+def test_with_pytest_mock(mocker):
+    mock_db = mocker.patch('myapp.database.get_connection')
+    mock_conn = Mock()
+    mock_db.return_value = mock_conn
+    
+    result = my_function()
+    mock_conn.execute.assert_called_once()
+```
+
+### Side effects
+
+```python
+from unittest.mock import Mock, side_effect
+
+def failing_mock():
+    raise ConnectionError("Network error")
+
+mock_func = Mock(side_effect=failing_mock)
+
+def test_network_failure():
+    with pytest.raises(ConnectionError):
+        mock_func()
+```
+
+## Тестирование исключений
+
+### pytest.raises
+
+```python
+def test_division_by_zero():
+    with pytest.raises(ZeroDivisionError):
+        divide(10, 0)
+
+def test_custom_exception():
+    with pytest.raises(ValueError, match="Invalid value"):
+        validate_input(-1)
+```
+
+### Проверка информации об исключении
+
+```python
+def test_exception_info():
+    with pytest.raises(ValueError) as exc_info:
+        validate_input(-1)
+    
+    assert "Invalid value" in str(exc_info.value)
+    assert exc_info.type == ValueError
+```
+
+## Конфигурация pytest
+
+### pytest.ini
+
+```ini
+[pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = -v --tb=short
+markers =
+    slow: marks tests as slow
+    integration: marks tests as integration tests
+```
+
+### pyproject.toml
+
+```toml
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --cov=myapp --cov-report=html"
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+]
+```
+
+### conftest.py
+
+Файл для общей конфигурации и fixtures:
+
+```python
+# tests/conftest.py
+import pytest
+
+@pytest.fixture(scope="session")
+def database():
+    db = Database("test.db")
+    yield db
+    db.close()
+
+@pytest.fixture
+def client(database):
+    return APIClient(database)
+```
+
+## Покрытие кода
+
+pytest-cov измеряет, какой процент кода покрыт тестами:
+
+```bash
+pytest --cov=myapp
+pytest --cov=myapp --cov-report=html
+pytest --cov=myapp --cov-report=term-missing
+```
+
+### .coveragerc
+
+```ini
+[run]
+source = myapp
+omit = */tests/*,*/migrations/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+
+[html]
+directory = htmlcov
+```
+
+## Фикстуры для веб-тестирования
+
+### Flask
+
+```python
+import pytest
+from myapp import app, db
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    
+    with app.test_client() as client:
+        with app.app_context():
+            db.create_all()
+            yield client
+            db.drop_all()
+
+def test_home_page(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'Welcome' in response.data
+```
+
+### FastAPI
+
+```python
+from fastapi.testclient import TestClient
+from myapp.main import app
+
+@pytest.fixture
+def client():
+    return TestClient(app)
+
+def test_read_item(client):
+    response = client.get("/items/1")
+    assert response.status_code == 200
+    assert response.json()["id"] == 1
+```
+
+## Тестирование асинхронного кода
+
+### pytest-asyncio
+
+```python
+import pytest
+import asyncio
+
+@pytest.mark.asyncio
+async def test_async_function():
+    result = await some_async_function()
+    assert result == expected
+
+@pytest.mark.asyncio
+async def test_async_with_fixture(async_client):
+    response = await async_client.get("/")
+    assert response.status_code == 200
+```
+
+### Асинхронные fixtures
+
+```python
+@pytest.fixture
+async def async_db():
+    db = await create_async_connection()
+    yield db
+    await db.close()
+
+@pytest.mark.asyncio
+async def test_with_async_db(async_db):
+    result = await async_db.query("SELECT 1")
+    assert result == 1
+```
+
+## Интеграционное тестирование API
+
+### requests для синхронных тестов
+
+```python
+import requests
+
+def test_api_endpoint():
+    response = requests.get("http://localhost:8000/api/users")
+    assert response.status_code == 200
+    assert len(response.json()) > 0
+```
+
+### httpx для асинхронных тестов
+
+```python
+import httpx
+import pytest
+
+@pytest.mark.asyncio
+async def test_async_api():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://localhost:8000/api/users")
+        assert response.status_code == 200
+        assert len(response.json()) > 0
+```
+
+## Фикстуры для тестовой базы данных
+
+### SQLAlchemy
+
+```python
+@pytest.fixture(scope="session")
+def engine():
+    return create_engine("sqlite:///:memory:")
+
+@pytest.fixture
+def db_session(engine):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    Base.metadata.create_all(engine)
+    yield session
+    session.rollback()
+    session.close()
+
+def test_create_user(db_session):
+    user = User(name="Test", email="test@example.com")
+    db_session.add(user)
+    db_session.commit()
+    
+    assert user.id is not None
+```
+
+## Тестирование CLI
+
+### click
+
+```python
+from click.testing import CliRunner
+from myapp.cli import cli
+
+def test_cli_command():
+    runner = CliRunner()
+    result = runner.invoke(cli, ['--version'])
+    assert result.exit_code == 0
+    assert 'version' in result.output
+```
+
+### argparse
+
+```python
+def test_argparse_parser():
+    parser = create_parser()
+    args = parser.parse_args(['--input', 'file.txt', '--output', 'out.txt'])
+    assert args.input == 'file.txt'
+    assert args.output == 'out.txt'
+```
+
+## Фикстуры для тестовых файлов
+
+```python
+import tempfile
+import os
+
+@pytest.fixture
+def temp_dir():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield tmpdir
+
+@pytest.fixture
+def sample_file(temp_dir):
+    filepath = os.path.join(temp_dir, "test.txt")
+    with open(filepath, "w") as f:
+        f.write("test content")
+    yield filepath
+
+def test_file_operations(sample_file):
+    with open(sample_file, "r") as f:
+        content = f.read()
+    assert content == "test content"
+```
+
+## Хуки (Hooks)
+
+pydoc-style, doctest, unittest.TestCase-style tests, and custom plugins. Pytest supports multiple test styles, so you can mix unittest.TestCase classes and plain functions in the same project. The core pytest framework ships with first-class support for function-style tests, and the unittest compatibility layer is provided so existing unittest-based test suites can be migrated incrementally.
+
+## Performance testing
+
+### pytest-benchmark
+
+```python
+def test_performance(benchmark):
+    result = benchmark(slow_function)
+    assert result == expected
+    assert benchmark.stats['mean'] < 0.1  # less than 100ms
+```
+
+## Continuous Integration
+
+### GitHub Actions
+
+```yaml
+name: Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+      - name: Run tests
+        run: pytest --cov=myapp
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+```
+
+## Лучшие практики тестирования
+
+1. **Пишите тесты до кода (TDD)** или сразу после написания кода
+2. **Один тест — одна проверка** — каждый тест проверяет одну вещь
+3. **Используйте описательные имена** — `test_user_creation_with_valid_data`
+4. **Изолируйте тесты** — тесты не должны зависеть друг от друга
+5. **Используйте fixtures** — переиспользуйте общий код настройки
+6. **Тестируйте граничные случаи** — пустые значения, None, большие числа
+7. **Тестируйте исключения** — не только happy path
+8. **Поддерживайте покрытие** — стремитесь к 80-90% покрытию
+9. **Автоматизируйте** — тесты должны запускаться в CI/CD
+10. **Рефакторите тесты** — поддерживайте тестовый код в порядке
+
+## Распространённые ошибки
+
+1. **Тестирование реализации, а не поведения** — тесты ломаются при рефакторинге
+2. **Слишком большие тесты** — тестируют слишком много вещей сразу
+3. **Хрупкие тесты** — зависят от времени, случайных данных, порядка выполнения
+4. **Недостаточная изоляция** — тесты влияют друг на друга
+5. **Дублирование кода** — повторяющийся код настройки в каждом тесте
+6. **Игнорирование медленных тестов** — медленные тесты откладываются и забываются
+7. **Тестирование только happy path** — исключения и ошибки не покрыты
+8. **Жёсткое кодирование** — хардкод значений вместо использования fixtures
+9. **Отсутствие документации** — непонятно, что тестирует тест
+10. **Слишком много assertion** — тест проверяет слишком много условий
+
+## Инструменты и экосистема
+
+### Основные пакеты
+
+- **pytest** — основной фреймворк тестирования
+- **pytest-cov** — измерение покрытия кода
+- **pytest-mock** — мокирование
+- **pytest-asyncio** — тестирование асинхронного кода
+- **pytest-django** — интеграция с Django
+- **pytest-flask** — интеграция с Flask
+- **pytest-fastapi** — интеграция с FastAPI
+- **pytest-benchmark** — бенчмарки производительности
+- **pytest-xdist** — параллельный запуск тестов
+- **pytest-html** — генерация HTML-отчётов
+- **factory_boy** — фабрики для тестовых данных
+- **faker** — генерация случайных данных
+- **responses** — мокирование HTTP-запросов
+- **freezegun** — мокирование времени
+- **vcrpy** — запись и воспроизведение HTTP-взаимодействий
+
+### IDE поддержка
+
+- **PyCharm** — встроенная поддержка pytest
+- **VS Code** — расширение Python
+- **vim/neovim** — плагины для pytest
+
+## Заключение
+
+Тестирование — это не дополнительная работа, а неотъемлемая часть разработки качественного программного обеспечения. Правильно написанные тесты:
+
+- Уменьшают количество багов в production
+- Упрощают рефакторинг кода
+- Ускоряют разработку новых функций
+- Улучшают архитектуру кода
+- Служат документацией для кода
+
+Начните с простых модульных тестов для критически важного кода и постепенно расширяйте покрытие. Используйте pytest как основной фреймворк — он простой, мощный и имеет огромную экосистему плагинов.
+
+Для продолжения изучения тестирования в Python рекомендуется:
+- Освоить pytest fixtures и параметризацию
+- Изучить мокирование с unittest.mock
+- Научиться писать интеграционные тесты
+- Изучить property-based тестирование с Hypothesis
+- Освоить нагрузочное тестирование с Locust

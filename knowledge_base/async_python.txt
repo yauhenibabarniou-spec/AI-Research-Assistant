@@ -1,0 +1,691 @@
+# Асинхронное программирование в Python
+
+Асинхронное программирование позволяет выполнять операции concurrently без использования многопоточности или многопроцессорности. В Python асинхронность реализуется через модуль asyncio, который появился в Python 3.4 и получил значительные улучшения в Python 3.5+.
+
+## Основные концепции асинхронности
+
+### Синхронное vs Асинхронное программирование
+
+**Синхронное программирование:**
+- Операции выполняются последовательно
+- Каждая операция блокирует выполнение программы
+- Простота отладки и понимания
+- Неэффективно для I/O-bound операций
+
+**Асинхронное программирование:**
+- Операции могут выполняться concurrently
+- Event loop управляет выполнением корутин
+- Эффективно для I/O-bound операций
+- Более сложное отладка и понимание
+
+### Event Loop (Цикл событий)
+
+Event loop — это центральный компонент asyncio, который управляет выполнением асинхронных задач. Он:
+- Отслеживает все зарегистрированные события
+- Выполняет корутины, когда операции завершаются
+- Обрабатывает callback-функции
+- Управляет очередью задач
+
+### Корутины (Coroutines)
+
+Корутины — это функции, которые могут приостанавливать и возобновлять выполнение. В Python они объявляются с помощью `async def`.
+
+### Tasks (Задачи)
+
+Task — это объект, который планирует выполнение корутины в event loop. Tasks позволяют concurrently выполнять несколько корутин.
+
+### Futures
+
+Future — это низкоуровневый объект, представляющий асинхронное вычисление. Tasks являются подклассом Future.
+
+## Синтаксис async/await
+
+### async def
+
+```python
+import asyncio
+
+async def my_coroutine():
+    print("Начало корутины")
+    await asyncio.sleep(1)  # Неблокирующая пауза
+    print("Конец корутины")
+```
+
+### await
+
+`await` используется для ожидания результата асинхронной операции без блокировки event loop:
+
+```python
+async def fetch_data():
+    print("Получение данных...")
+    await asyncio.sleep(2)  # Имитация I/O операции
+    return {"data": "result"}
+
+async def main():
+    result = await fetch_data()
+    print(result)
+```
+
+## Запуск асинхронного кода
+
+### asyncio.run()
+
+Самый простой способ запустить асинхронный код в Python 3.7+:
+
+```python
+import asyncio
+
+async def main():
+    print("Hello")
+    await asyncio.sleep(1)
+    print("World")
+
+asyncio.run(main())
+```
+
+### asyncio.create_task()
+
+Создаёт задачу для параллельного выполнения:
+
+```python
+async def main():
+    task1 = asyncio.create_task(coroutine1())
+    task2 = asyncio.create_task(coroutine2())
+    
+    await task1
+    await task2
+```
+
+### asyncio.gather()
+
+Запускает несколько корутин concurrently и возвращает результаты:
+
+```python
+async def main():
+    results = await asyncio.gather(
+        coroutine1(),
+        coroutine2(),
+        coroutine3()
+    )
+    return results
+```
+
+### asyncio.wait()
+
+Более гибкая альтернатива gather:
+
+```python
+async def main():
+    tasks = [
+        asyncio.create_task(coroutine1()),
+        asyncio.create_task(coroutine2()),
+    ]
+    done, pending = await asyncio.wait(tasks, timeout=5)
+```
+
+## Работа с сетевыми операциями
+
+### aiohttp — асинхронный HTTP-клиент
+
+```python
+import aiohttp
+import asyncio
+
+async def fetch_url(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def main():
+    urls = [
+        "https://example.com",
+        "https://example.org",
+        "https://example.net",
+    ]
+    
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+    
+    for url, content in zip(urls, results):
+        print(f"{url}: {len(content)} bytes")
+
+asyncio.run(main())
+```
+
+### asyncpg — асинхронный драйвер PostgreSQL
+
+```python
+import asyncpg
+import asyncio
+
+async def fetch_users():
+    conn = await asyncpg.connect(
+        user='user',
+        password='password',
+        database='mydb',
+        host='localhost'
+    )
+    
+    rows = await conn.fetch('SELECT * FROM users WHERE age > $1', 18)
+    await conn.close()
+    
+    return rows
+
+async def main():
+    users = await fetch_users()
+    for user in users:
+        print(user['name'], user['email'])
+
+asyncio.run(main())
+```
+
+## Асинхронные генераторы и итераторы
+
+### async for
+
+```python
+async def async_range(n):
+    for i in range(n):
+        await asyncio.sleep(0.5)
+        yield i
+
+async def main():
+    async for i in async_range(5):
+        print(i)
+```
+
+### aiter и anext
+
+```python
+async def main():
+    gen = async_range(3)
+    print(await gen.__anext__())  # 0
+    print(await gen.__anext__())  # 1
+    print(await gen.__anext__())  # 2
+```
+
+## Контекстные менеджеры
+
+### async with
+
+```python
+class AsyncContextManager:
+    async def __aenter__(self):
+        print("Вход в контекст")
+        await asyncio.sleep(0.1)
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Выход из контекста")
+        await asyncio.sleep(0.1)
+    
+    async def do_something(self):
+        print("Выполнение операции")
+        await asyncio.sleep(0.1)
+
+async def main():
+    async with AsyncContextManager() as manager:
+        await manager.do_something()
+```
+
+## Синхронизация примитивы
+
+### asyncio.Lock
+
+```python
+lock = asyncio.Lock()
+
+async def critical_section(name):
+    async with lock:
+        print(f"{name} вошёл в критическую секцию")
+        await asyncio.sleep(0.5)
+        print(f"{name} вышел из критической секции")
+
+async def main():
+    await asyncio.gather(
+        critical_section("A"),
+        critical_section("B"),
+        critical_section("C")
+    )
+```
+
+### asyncio.Semaphore
+
+Ограничивает количество одновременных доступов:
+
+```python
+semaphore = asyncio.Semaphore(2)  # Максимум 2 одновременных доступа
+
+async def access_resource(name):
+    async with semaphore:
+        print(f"{name} получил доступ")
+        await asyncio.sleep(1)
+        print(f"{name} освободил доступ")
+```
+
+### asyncio.Event
+
+Механизм сигнализации между корутинами:
+
+```python
+event = asyncio.Event()
+
+async def waiter(name):
+    print(f"{name} ждёт события...")
+    await event.wait()
+    print(f"{name} получил событие!")
+
+async def setter():
+    await asyncio.sleep(2)
+    print("Установка события")
+    event.set()
+
+async def main():
+    await asyncio.gather(
+        waiter("A"),
+        waiter("B"),
+        setter()
+    )
+```
+
+### asyncio.Queue
+
+Очередь для безопасного обмена данными между корутинами:
+
+```python
+queue = asyncio.Queue(maxsize=10)
+
+async def producer():
+    for i in range(20):
+        await queue.put(i)
+        print(f"Производитель: добавил {i}")
+        await asyncio.sleep(0.1)
+
+async def consumer(name):
+    while True:
+        item = await queue.get()
+        print(f"Потребитель {name}: получил {item}")
+        queue.task_done()
+        await asyncio.sleep(0.2)
+
+async def main():
+    producers = [asyncio.create_task(producer())]
+    consumers = [asyncio.create_task(consumer(f"Consumer-{i}")) for i in range(3)]
+    
+    await asyncio.gather(*producers)
+    await queue.join()  # Ждём, пока все задачи будут выполнены
+    
+    for c in consumers:
+        c.cancel()
+```
+
+## Обработка исключений
+
+### try/except в асинхронном коде
+
+```python
+async def risky_operation():
+    await asyncio.sleep(0.1)
+    raise ValueError("Что-то пошло не так")
+
+async def main():
+    try:
+        await risky_operation()
+    except ValueError as e:
+        print(f"Обработано исключение: {e}")
+```
+
+### asyncio.gather() с обработкой исключений
+
+```python
+async def main():
+    results = await asyncio.gather(
+        coroutine1(),
+        coroutine2(),
+        coroutine3(),
+        return_exceptions=True  # Возвращать исключения вместо выбрасывания
+    )
+    
+    for result in results:
+        if isinstance(result, Exception):
+            print(f"Ошибка: {result}")
+        else:
+            print(f"Результат: {result}")
+```
+
+### asyncio.TaskGroup() (Python 3.11+)
+
+```python
+async def main():
+    async with asyncio.TaskGroup() as tg:
+        task1 = tg.create_task(coroutine1())
+        task2 = tg.create_task(coroutine2())
+        task3 = tg.create_task(coroutine3())
+    
+    # Все задачи завершены здесь
+    print(task1.result())
+    print(task2.result())
+    print(task3.result())
+```
+
+## Таймауты
+
+### asyncio.wait_for()
+
+```python
+async def slow_operation():
+    await asyncio.sleep(10)
+    return "Результат"
+
+async def main():
+    try:
+        result = await asyncio.wait_for(slow_operation(), timeout=2.0)
+    except asyncio.TimeoutError:
+        print("Операция превысила таймаут")
+```
+
+### asyncio.timeout() (Python 3.11+)
+
+```python
+async def main():
+    try:
+        async with asyncio.timeout(2.0):
+            result = await slow_operation()
+    except TimeoutError:
+        print("Таймаут!")
+```
+
+## Практические паттерны
+
+### Паттерн "Worker Pool"
+
+```python
+async def worker(name, queue):
+    while True:
+        task = await queue.get()
+        print(f"Worker {name} выполняет {task}")
+        await asyncio.sleep(0.5)
+        queue.task_done()
+
+async def main():
+    queue = asyncio.Queue()
+    
+    # Создаём пул воркеров
+    workers = [asyncio.create_task(worker(f"Worker-{i}", queue)) 
+               for i in range(5)]
+    
+    # Добавляем задачи
+    for i in range(20):
+        await queue.put(f"Task-{i}")
+    
+    await queue.join()
+    
+    # Отменяем воркеров
+    for w in workers:
+        w.cancel()
+```
+
+### Паттерн "Fan-out / Fan-in"
+
+```python
+async def fetch_data(source):
+    await asyncio.sleep(0.5)  # Имитация I/O
+    return f"Data from {source}"
+
+async def main():
+    sources = ["A", "B", "C", "D", "E"]
+    
+    # Fan-out: запускаем все операции concurrently
+    tasks = [fetch_data(s) for s in sources]
+    results = await asyncio.gather(*tasks)
+    
+    # Fan-in: обрабатываем результаты
+    for source, data in zip(sources, results):
+        print(f"{source}: {data}")
+```
+
+### Паттерн "Producer-Consumer"
+
+```python
+async def producer(queue, n):
+    for i in range(n):
+        await queue.put(i)
+        print(f"Производитель: {i}")
+        await asyncio.sleep(0.1)
+
+async def consumer(queue, name):
+    while True:
+        item = await queue.get()
+        print(f"Потребитель {name}: {item}")
+        queue.task_done()
+        await asyncio.sleep(0.2)
+
+async def main():
+    queue = asyncio.Queue(maxsize=5)
+    
+    prod = asyncio.create_task(producer(queue, 20))
+    consumers = [asyncio.create_task(consumer(queue, f"C{i}")) for i in range(3)]
+    
+    await prod
+    await queue.join()
+    
+    for c in consumers:
+        c.cancel()
+```
+
+### Паттерн "Rate Limiter"
+
+```python
+class RateLimiter:
+    def __init__(self, rate_limit):
+        self.rate_limit = rate_limit
+        self.tokens = rate_limit
+        self.last_update = asyncio.get_event_loop().time()
+        self.lock = asyncio.Lock()
+    
+    async def acquire(self):
+        async with self.lock:
+            now = asyncio.get_event_loop().time()
+            elapsed = now - self.last_update
+            self.tokens = min(self.rate_limit, self.tokens + elapsed * self.rate_limit)
+            self.last_update = now
+            
+            if self.tokens >= 1:
+                self.tokens -= 1
+                return True
+            else:
+                return False
+
+async def rate_limited_request(limiter, url):
+    while not await limiter.acquire():
+        await asyncio.sleep(0.1)
+    
+    print(f"Запрос к {url}")
+    await asyncio.sleep(0.5)  # Имитация запроса
+```
+
+## Асинхронные веб-фреймворки
+
+### FastAPI
+
+FastAPI — современный веб-фреймворк с нативной поддержкой async/await:
+
+```python
+from fastapi import FastAPI
+import httpx
+
+app = FastAPI()
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"https://api.example.com/users/{user_id}")
+        return response.json()
+
+@app.get("/posts")
+async def get_posts():
+    async with httpx.AsyncClient() as client:
+        response1 = await client.get("https://api.example.com/posts")
+        response2 = await client.get("https://api.example.com/comments")
+        return {
+            "posts": response1.json(),
+            "comments": response2.json()
+        }
+```
+
+### aiohttp — асинхронный HTTP-сервер
+
+```python
+from aiohttp import web
+
+async def handler(request):
+    name = request.match_info.get('name', 'World')
+    return web.Response(text=f"Hello, {name}!")
+
+app = web.Application()
+app.add_routes([web.get('/', handler)])
+web.run_app(app, port=8080)
+```
+
+## Асинхронные тесты
+
+### pytest-asyncio
+
+```python
+import pytest
+import asyncio
+
+@pytest.mark.asyncio
+async def test_async_function():
+    result = await some_async_function()
+    assert result == expected_value
+
+@pytest.mark.asyncio
+async def test_concurrent():
+    tasks = [asyncio.create_task(coroutine(i)) for i in range(5)]
+    results = await asyncio.gather(*tasks)
+    assert len(results) == 5
+```
+
+### asynctest
+
+```python
+import asynctest
+
+class TestAsyncFunction(asynctest.TestCase):
+    async def test_async_method(self):
+        result = await self.some_async_method()
+        self.assertEqual(result, expected)
+```
+
+## Оптимизация производительности
+
+### Асинхронные пулы соединений
+
+```python
+import aiohttp
+import asyncio
+
+async def fetch_with_session(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+async def main():
+    connector = aiohttp.TCPConnector(limit=100, limit_per_host=10)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        tasks = [fetch_with_session(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+```
+
+### asyncio.run_in_executor()
+
+Выполнение блокирующих операций в пуле потоков:
+
+```python
+import asyncio
+import concurrent.futures
+
+def blocking_operation(data):
+    import time
+    time.sleep(1)
+    return data * 2
+
+async def main():
+    loop = asyncio.get_event_loop()
+    
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        tasks = [
+            loop.run_in_executor(pool, blocking_operation, i)
+            for i in range(10)
+        ]
+        results = await asyncio.gather(*tasks)
+    
+    print(results)
+```
+
+## Отладка асинхронного кода
+
+### Логирование
+
+```python
+import logging
+import asyncio
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+async def my_coroutine():
+    logger.info("Начало операции")
+    await asyncio.sleep(0.5)
+    logger.info("Операция завершена")
+```
+
+### Трассировка
+
+```python
+import asyncio
+
+async def main():
+    asyncio.run(main(), debug=True)  # Включить режим отладки
+```
+
+### asyncio.Task.all_tasks()
+
+```python
+async def main():
+    tasks = asyncio.all_tasks()
+    for task in tasks:
+        print(f"Task: {task.get_name()}, State: {task._state}")
+```
+
+## Лучшие практики
+
+1. **Избегайте блокирующих операций** в асинхронном коде
+2. **Используйте пулы потоков** для CPU-bound операций
+3. **Ограничивайте количество concurrent задач** с помощью семафоров
+4. **Используйте timeouts** для предотвращения зависаний
+5. **Правильно обрабатывайте исключения** в concurrent задачах
+6. **Используйте профилирование** для выявления узких мест
+7. **Тестируйте асинхронный код** отдельно от синхронного
+8. **Документируйте асинхронные API** явно
+9. **Избегайте глобального event loop** — создавайте новый для каждого приложения
+10. **Используйте type hints** для асинхронных функций
+
+## Сравнение с другими подходами
+
+| Подход | Преимущества | Недостатки |
+|--------|-------------|------------|
+| Многопоточность | Простота, стандартная библиотека | GIL, переключение контекста |
+| Многопроцессорность | Обход GIL, реальный параллелизм | Высокое потребление памяти |
+| Асинхронность | Низкое потребление ресурсов, масштабируемость | Только для I/O-bound операций |
+| События (Event-driven) | Высокая производительность | Сложность архитектуры |
+
+## Заключение
+
+Асинхронное программирование в Python — это мощный инструмент для создания высокопроизводительных приложений, работающих с сетью, файловой системой и другими I/O-bound операциями. Ключевые преимущества:
+
+- **Эффективность** — меньше потоков и контекстных переключений
+- **Масштабируемость** — обработка тысяч одновременных соединений
+- **Простота кода** — последовательный стиль для асинхронных операций
+
+Однако важно помнить, что асинхронность не панацея. Для CPU-bound задач лучше подходят многопроцессорные решения. Выбор между синхронным, многопоточным, многопроцессорным и асинхронным подходом зависит от конкретной задачи.

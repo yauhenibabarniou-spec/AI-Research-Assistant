@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-"""Run retrieval evaluation against golden dataset."""
-
 import argparse
 import csv
 import json
 import logging
 from pathlib import Path
 
+from app.common.utils import chunk_id
 from app.eval.golden_dataset import GoldenDataset
 from app.eval.retrieval_metrics import RetrievalMetrics, hit_at_k, recall_at_k
 from app.rag.embeddings import Embeddings
@@ -42,9 +40,7 @@ def main() -> None:
     for item in dataset.all():
         if item.source_doc == "multiple":
             continue
-        results = vector_manager.get_relevant_documents(
-            item.question, k=args.k, score_threshold=args.score_threshold
-        )
+        results = vector_manager.get_relevant_documents(item.question, k=args.k, score_threshold=args.score_threshold)
         retrieved_docs = [doc for doc, _ in results]
         metrics.add(item.expected_chunk_ids, retrieved_docs, args.k)
         rows.append(
@@ -52,12 +48,7 @@ def main() -> None:
                 "id": item.id,
                 "question": item.question,
                 "expected_chunk_ids": "|".join(item.expected_chunk_ids),
-                "retrieved_chunk_ids": "|".join(
-                    [
-                        f"{doc.metadata.get('source', '')}:{doc.metadata.get('start_index', 0)}:{__import__('hashlib').sha256(doc.page_content.encode()).hexdigest()[:16]}"
-                        for doc, _ in results
-                    ]
-                ),
+                "retrieved_chunk_ids": "|".join([chunk_id(doc) for doc, _ in results]),
                 "hit": hit_at_k(
                     item.expected_chunk_ids,
                     retrieved_docs,
@@ -83,7 +74,16 @@ def main() -> None:
         )
         writer.writeheader()
         writer.writerows(rows)
-        writer.writerow({"id": "SUMMARY", "question": "", "expected_chunk_ids": "", "retrieved_chunk_ids": "", "hit": summary["hit_at_k"], "recall": summary["recall_at_k"]})
+        writer.writerow(
+            {
+                "id": "SUMMARY",
+                "question": "",
+                "expected_chunk_ids": "",
+                "retrieved_chunk_ids": "",
+                "hit": summary["hit_at_k"],
+                "recall": summary["recall_at_k"],
+            }
+        )
 
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 

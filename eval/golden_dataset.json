@@ -304,5 +304,561 @@
     "source_doc": "multiple",
     "difficulty": "medium",
     "category": "project"
+  },
+  {
+    "id": "sql_001",
+    "question": "Что такое SQL и для чего он используется?",
+    "expected_answer": "SQL (Structured Query Language) — это стандартный язык для работы с реляционными базами данных. Он используется для создания, управления и запроса данных в СУБД, таких как PostgreSQL, MySQL, SQLite.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:0:6e1c937a7ab3919d"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "sql_002",
+    "question": "Какие основные типы данных существуют в SQL?",
+    "expected_answer": "Основные типы данных SQL: числовые (INTEGER, BIGINT, DECIMAL, FLOAT), строковые (CHAR, VARCHAR, TEXT), дата/время (DATE, TIME, TIMESTAMP), а также BOOLEAN, BLOB, JSON, ARRAY, UUID.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:539:79a6e11b8beeb9b2",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:1270:7b3adabb7430edf2"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "easy",
+    "category": "data_types"
+  },
+  {
+    "id": "sql_003",
+    "question": "Что такое реляционная база данных?",
+    "expected_answer": "Реляционная база данных хранит данные в виде таблиц (отношений). Основные концепции: таблица, строка, столбец, первичный ключ, внешний ключ.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:0:6e1c937a7ab3919d",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:539:79a6e11b8beeb9b2"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "sql_004",
+    "question": "Какие команды относятся к DDL и DML в SQL?",
+    "expected_answer": "DDL: CREATE, ALTER, DROP, TRUNCATE, RENAME. DML: SELECT, INSERT, UPDATE, DELETE, MERGE.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:2706:fafd54952f3b39c2"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "easy",
+    "category": "commands"
+  },
+  {
+    "id": "sql_005",
+    "question": "Что такое JOIN в SQL и какие его типы существуют?",
+    "expected_answer": "JOIN объединяет строки из двух или более таблиц. Типы: INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN, CROSS JOIN, SELF JOIN.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:4741:30f17da730058c38"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "medium",
+    "category": "joins"
+  },
+  {
+    "id": "sql_006",
+    "question": "Что такое агрегирующие функции в SQL?",
+    "expected_answer": "Агрегирующие функции: COUNT(), SUM(), AVG(), MIN(), MAX(). Используются с GROUP BY для вычислений над набором строк.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:4099:2b00a36f221bd973"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "easy",
+    "category": "aggregation"
+  },
+  {
+    "id": "sql_007",
+    "question": "Что такое подзапрос в SQL?",
+    "expected_answer": "Подзапрос — это запрос внутри другого запроса. Может использоваться в WHERE, FROM, HAVING. Пример: SELECT name FROM employees WHERE salary > (SELECT AVG(salary) FROM employees).",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:5422:f227091f9c058bb3"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "medium",
+    "category": "subqueries"
+  },
+  {
+    "id": "sql_008",
+    "question": "Что такое нормализация баз данных?",
+    "expected_answer": "Нормализация — это организация данных для минимизации избыточности. Нормальные формы: 1NF, 2NF, 3NF, BCNF.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:7467:a2a7388b567dd495"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "medium",
+    "category": "normalization"
+  },
+  {
+    "id": "sql_009",
+    "question": "Какие свойства транзакций описываются acronym ACID?",
+    "expected_answer": "ACID: Atomicity (атомарность), Consistency (согласованность), Isolation (изолированность), Durability (долговечность).",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:6763:d90151380dfcf9c5"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "medium",
+    "category": "transactions"
+  },
+  {
+    "id": "sql_010",
+    "question": "Какие типы индексов используются в SQL?",
+    "expected_answer": "Типы индексов: B-tree, Hash, GiST, GIN, BRIN. Индексы ускоряют выборку, но замедляют INSERT/UPDATE/DELETE.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/sql_basics.txt:6095:f154a905d8c296d5"
+    ],
+    "source_doc": "sql_basics.txt",
+    "difficulty": "medium",
+    "category": "indexes"
+  },
+  {
+    "id": "git_001",
+    "question": "Что такое Git и кто его создал?",
+    "expected_answer": "Git — это распределённая система контроля версий, созданная Линусом Торвальдсом в 2005 году для разработки ядра Linux.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:0:41e60ef384c9306d"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "git_002",
+    "question": "Что такое коммит в Git?",
+    "expected_answer": "Коммит — это снимок состояния файлов в определённый момент времени. Имеет уникальный хеш SHA-1, содержит автора, дату, сообщение, родительский коммит, изменённые файлы.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:0:41e60ef384c9306d"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "git_003",
+    "question": "Как создать и переключиться на новую ветку в Git?",
+    "expected_answer": "git branch <branch-name> — создать ветку. git checkout <branch-name> или git switch <branch-name> — переключиться. git checkout -b <branch> — создать и переключиться.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:2948:53c485240a307d62"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "easy",
+    "category": "branching"
+  },
+  {
+    "id": "git_004",
+    "question": "Что такое Pull Request?",
+    "expected_answer": "Pull Request (PR) или Merge Request (MR) — это предложение объединить изменения из одной ветки в другую. Обычно сопровождается обсуждением и код-ревью.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:709:537bdb581a35d5b0"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "easy",
+    "category": "workflow"
+  },
+  {
+    "id": "git_005",
+    "question": "Как отменить изменения в рабочей директории Git?",
+    "expected_answer": "git restore <file> — отменить изменения в файле. git restore . — отменить все изменения. git restore --staged <file> — убрать из индекса.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:1908:4e8d167fea268f63"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "medium",
+    "category": "undo"
+  },
+  {
+    "id": "git_006",
+    "question": "Что такое git stash?",
+    "expected_answer": "Stash позволяет временно сохранить незафиксированные изменения. git stash — сохранить, git stash list — список, git stash apply — применить, git stash pop — применить и удалить.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:6533:a90bc0006d7e7463"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "medium",
+    "category": "stash"
+  },
+  {
+    "id": "git_007",
+    "question": "Что такое rebase в Git?",
+    "expected_answer": "Rebase — это альтернатива merge, которая перезаписывает историю коммитов. Позволяет изменять, объединять, удалять или переупорядочивать коммиты.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:5262:6385a917205b5de0"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "medium",
+    "category": "rebase"
+  },
+  {
+    "id": "git_008",
+    "question": "Какие модели ветвления существуют в Git?",
+    "expected_answer": "Git-flow, GitHub Flow, Trunk-based Development. Git-flow использует постоянные ветки main/develop. GitHub Flow — простой workflow с PR. Trunk-based — все разработчики работают в основной ветке.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:8518:ee7f1aec5f002dd4"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "medium",
+    "category": "workflow"
+  },
+  {
+    "id": "git_009",
+    "question": "Как найти коммит, сломавший функциональность?",
+    "expected_answer": "Используется git bisect — бинарный поиск по истории коммитов. git bisect start, git bisect bad HEAD, git bisect good <commit-hash>, затем проверять каждый коммит.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:10929:447698fe758a6c8c"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "hard",
+    "category": "debugging"
+  },
+  {
+    "id": "git_010",
+    "question": "Что такое .gitignore и зачем он нужен?",
+    "expected_answer": ".gitignore указывает Git, какие файлы игнорировать. Используется для исключения зависимостей, артефактов сборки, IDE файлов, логов, окружений.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/git_workflow.txt:7730:7f547bb04823cbcb"
+    ],
+    "source_doc": "git_workflow.txt",
+    "difficulty": "easy",
+    "category": "configuration"
+  },
+  {
+    "id": "docker_001",
+    "question": "Что такое Docker и зачем он используется?",
+    "expected_answer": "Docker — это платформа для разработки, доставки и запуска контейнеризированных приложений. Контейнеры упаковывают приложение со всеми зависимостями.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:0:d31e864b5534923d"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "docker_002",
+    "question": "Что такое контейнер и образ в Docker?",
+    "expected_answer": "Образ — неизменяемый шаблон для создания контейнеров. Контейнер — лёгкий, автономный, исполняемый пакет с кодом, средой выполнения, библиотеками и настройками.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:0:d31e864b5534923d"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "easy",
+    "category": "concepts"
+  },
+  {
+    "id": "docker_003",
+    "question": "Что такое Dockerfile?",
+    "expected_answer": "Dockerfile — текстовый документ с командами для сборки образа. Содержит FROM, RUN, COPY, CMD, EXPOSE и другие инструкции.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:4200:72535d670ab8e7a2",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:4256:d8beebb4a7d84e82"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "easy",
+    "category": "dockerfile"
+  },
+  {
+    "id": "docker_004",
+    "question": "Как установить Docker на Ubuntu?",
+    "expected_answer": "Установка: sudo apt update, установка зависимостей, добавление GPG-ключа Docker, добавление репозитория, sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin, добавление пользователя в группу docker.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:1557:e0debfae833f72d5",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:2187:fdef1cd1c5adcb4c"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "installation"
+  },
+  {
+    "id": "docker_005",
+    "question": "Что такое Docker Compose?",
+    "expected_answer": "Docker Compose — инструмент для определения и запуска многоконтейнерных приложений через YAML-файл. Позволяет описывать сервисы, сети, тома.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:6568:ff7e17b550b2ec7b"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "easy",
+    "category": "compose"
+  },
+  {
+    "id": "docker_006",
+    "question": "Какие типы сетей существуют в Docker?",
+    "expected_answer": "Типы сетей: bridge, host, none, overlay, macvlan. Bridge — сеть моста по умолчанию. Host — контейнер использует сетевой стек хоста.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:7988:fcf53a404b781378"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "networking"
+  },
+  {
+    "id": "docker_007",
+    "question": "Что такое тома в Docker?",
+    "expected_answer": "Тома — механизм хранения данных. Типы: bind mounts, named volumes, tmpfs mounts. Позволяют сохранять данные после удаления контейнера.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:9008:a4f65f5ca5c7aaa1"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "storage"
+  },
+  {
+    "id": "docker_008",
+    "question": "Что такое Docker Swarm?",
+    "expected_answer": "Docker Swarm — встроенный инструмент для оркестрации контейнеров. Основные концепции: Node, Service, Task, Manager node, Worker node.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:9695:ff2eb1e29145df40"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "orchestration"
+  },
+  {
+    "id": "docker_009",
+    "question": "Какие лучшие практики безопасности Docker рекомендуются?",
+    "expected_answer": "Не запускать контейнеры от root, использовать официальные образы, регулярно обновлять образы, использовать минимальные базовые образы, сканировать на уязвимости, ограничивать ресурсы.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:11537:76afc84512540b98"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "security"
+  },
+  {
+    "id": "docker_010",
+    "question": "Что такое многоэтапная сборка в Docker?",
+    "expected_answer": "Многоэтапная сборка позволяет создавать маленькие и безопасные образы. Использует несколько FROM инструкций: один этап для сборки, другой для продакшена.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:12165:d11fbcfc7ffa2d8c"
+    ],
+    "source_doc": "docker_basics.txt",
+    "difficulty": "medium",
+    "category": "optimization"
+  },
+  {
+    "id": "async_001",
+    "question": "Что такое асинхронное программирование в Python?",
+    "expected_answer": "Асинхронное программирование позволяет выполнять операции concurrently без многопоточности. Реализуется через asyncio, event loop, корутины с async/await.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:0:f861b545993fc265"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "easy",
+    "category": "general"
+  },
+  {
+    "id": "async_002",
+    "question": "Что такое event loop?",
+    "expected_answer": "Event loop — центральный компонент asyncio, который управляет выполнением асинхронных задач. Отслеживает события, выполняет корутины, обрабатывает callbacks.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:775:1438e62724fb2f67"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "medium",
+    "category": "core"
+  },
+  {
+    "id": "async_003",
+    "question": "Что такое корутины в Python?",
+    "expected_answer": "Корутины — функции, которые могут приостанавливать и возобновлять выполнение. Объявляются через async def. Используют await для ожидания асинхронных операций.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:1492:3e870d075931414a"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "easy",
+    "category": "core"
+  },
+  {
+    "id": "async_004",
+    "question": "Как работает async/await?",
+    "expected_answer": "async def объявляет корутину. await приостанавливает выполнение до завершения асинхронной операции без блокировки event loop.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:1492:3e870d075931414a",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:2162:43b05297398c0961"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "easy",
+    "category": "syntax"
+  },
+  {
+    "id": "async_005",
+    "question": "Что такое asyncio.gather()?",
+    "expected_answer": "asyncio.gather() запускает несколько корутин concurrently и возвращает список результатов. Подходит для параллельного выполнения независимых операций.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:2162:43b05297398c0961"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "medium",
+    "category": "concurrency"
+  },
+  {
+    "id": "async_006",
+    "question": "Что такое aiohttp?",
+    "expected_answer": "aiohttp — асинхронный HTTP-клиент и сервер. Позволяет выполнять HTTP-запросы concurrently без блокировки event loop.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:3118:02cf3f3fe373dedb"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "easy",
+    "category": "libraries"
+  },
+  {
+    "id": "async_007",
+    "question": "Что такое asyncio.Queue?",
+    "expected_answer": "asyncio.Queue — очередь для безопасного обмена данными между корутинами. Используется в паттернах Producer-Consumer.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:6315:2eb3f99fdd6bcc03"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "medium",
+    "category": "synchronization"
+  },
+  {
+    "id": "async_008",
+    "question": "Что такое asyncio.TaskGroup()?",
+    "expected_answer": "asyncio.TaskGroup() — контекстный менеджер Python 3.11+ для группового управления задачами. Все задачи завершаются при выходе из блока async with.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:7829:e9e645a0f0837a9a"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "medium",
+    "category": "concurrency"
+  },
+  {
+    "id": "async_009",
+    "question": "Как обработать таймаут в асинхронном коде?",
+    "expected_answer": "Используется asyncio.wait_for(coroutine, timeout) или asyncio.timeout(seconds) в Python 3.11+. При превышении времени возникает TimeoutError.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:8502:574b497822f2a20c"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "medium",
+    "category": "error_handling"
+  },
+  {
+    "id": "async_010",
+    "question": "Что такое паттерн Rate Limiter в асинхронном коде?",
+    "expected_answer": "Rate Limiter ограничивает количество одновременных запросов. Реализуется через семафоры или токены. Пример: класс RateLimiter с методом acquire().",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:10494:f94f93f394ec7e87",
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:11188:2cb3e7d0a14c4369"
+    ],
+    "source_doc": "async_python.txt",
+    "difficulty": "hard",
+    "category": "patterns"
+  },
+  {
+    "id": "testing_001",
+    "question": "Что такое pytest?",
+    "expected_answer": "pytest — популярный фреймворк для тестирования Python с простым синтаксисом и мощными возможностями: fixtures, параметризация, маркеры.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:0:cd8400e4f3d7e4ea"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "easy",
+    "category": "frameworks"
+  },
+  {
+    "id": "testing_002",
+    "question": "Что такое fixtures в pytest?",
+    "expected_answer": "Fixtures — функции, предоставляющие тестовые данные или настраивающие окружение. Объявляются через @pytest.fixture. Могут иметь scope: session, module, function.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:1887:6d3d2a9ba400c15e"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "easy",
+    "category": "fixtures"
+  },
+  {
+    "id": "testing_003",
+    "question": "Как параметризовать тесты в pytest?",
+    "expected_answer": "Используется @pytest.mark.parametrize с указанием параметров и ожидаемых значений. Позволяет запустить тест с несколькими наборами данных.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:2487:bf878c6821ea7b35"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "medium",
+    "category": "parametrization"
+  },
+  {
+    "id": "testing_004",
+    "question": "Что такое мокирование в тестировании?",
+    "expected_answer": "Мокирование — замена реальных зависимостей на тестовые двойники. В Python используется unittest.mock с Mock, patch, MagicMock.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:3864:c2a84893661fa9bf"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "medium",
+    "category": "mocking"
+  },
+  {
+    "id": "testing_005",
+    "question": "Как тестировать исключения в pytest?",
+    "expected_answer": "Используется pytest.raises(ExceptionType) как контекстный менеджер. Можно проверять тип исключения и сообщение через match.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:3864:c2a84893661fa9bf"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "medium",
+    "category": "exceptions"
+  },
+  {
+    "id": "testing_006",
+    "question": "Что такое покрытие кода?",
+    "expected_answer": "Покрытие кода — процент кода, выполненного во время тестов. Измеряется через pytest-cov. Цель — 80-90% покрытие.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:5291:19292c846b8b4f8d"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "easy",
+    "category": "coverage"
+  },
+  {
+    "id": "testing_007",
+    "question": "Как тестировать FastAPI приложения?",
+    "expected_answer": "Используется TestClient из fastapi.testclient. Создаётся фикстура client = TestClient(app). Запросы: client.get('/'), client.post('/', json=...). Проверка status_code и json().",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:7212:406fa5fa9462f433"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "medium",
+    "category": "web_testing"
+  },
+  {
+    "id": "testing_008",
+    "question": "Что такое pytest-asyncio?",
+    "expected_answer": "pytest-asyncio — плагин для тестирования асинхронного кода. Использует @pytest.mark.asyncio для пометки асинхронных тестов.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:12791:bbc042636f0c537e"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "medium",
+    "category": "async_testing"
+  },
+  {
+    "id": "testing_009",
+    "question": "Что такое TDD?",
+    "expected_answer": "TDD (Test-Driven Development) — разработка через тестирование. Сначала пишутся тесты, затем реализуется функционал, после чего рефакторинг.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:11357:636702dbfb0ea316"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "easy",
+    "category": "methodology"
+  },
+  {
+    "id": "testing_010",
+    "question": "Какие лучшие практики тестирования рекомендуются?",
+    "expected_answer": "Пишите тесты до кода (TDD), один тест — одна проверка, используйте описательные имена, изолируйте тесты, тестируйте граничные случаи, поддерживайте покрытие 80-90%, автоматизируйте в CI/CD.",
+    "expected_chunk_ids": [
+      "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/testing_python.txt:11357:636702dbfb0ea316"
+    ],
+    "source_doc": "testing_python.txt",
+    "difficulty": "easy",
+    "category": "best_practices"
   }
 ]

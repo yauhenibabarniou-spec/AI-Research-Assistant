@@ -1,11 +1,10 @@
-import hashlib
 import logging
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
+from app.common.utils import chunk_id
 from app.rag.loaders import DocumentLoader
-
 from app.rag.splitters import TextSplitter
 
 
@@ -40,12 +39,6 @@ class ChromaStore:
             collection_name=self.collection_name,
         )
 
-    def _chunk_id(self, chunk: Document) -> str:
-        """Генерация детерминированного ID для чанка."""
-        src = chunk.metadata.get("source", "")
-        start = chunk.metadata.get("start_index", 0)
-        h = hashlib.sha256(chunk.page_content.encode()).hexdigest()[:16]
-        return f"{src}:{start}:{h}"
 
     def index_documents(self) -> int:
         """Индексация документов в векторном хранилище с чанкингом и идемпотентностью."""
@@ -68,8 +61,16 @@ class ChromaStore:
             self.logger.warning("Нет чанков для индексации.")
             return 0
 
+        # Очистка коллекции для идемпотентности
+        try:
+            self.vectorstore.delete_collection()
+            self._init_vectorstore(self.vectorstore._embedding_function)
+            self.logger.info("Коллекция очищена перед индексацией.")
+        except Exception as e:
+            self.logger.warning(f"Не удалось очистить коллекцию: {e}")
+
         # Генерация детерминированных ID
-        chunk_ids = [self._chunk_id(chunk) for chunk in all_chunks]
+        chunk_ids = [chunk_id(chunk) for chunk in all_chunks]
 
         # Добавление чанков в векторное хранилище
         self.logger.info("Создание эмбеддингов и индексация...")
