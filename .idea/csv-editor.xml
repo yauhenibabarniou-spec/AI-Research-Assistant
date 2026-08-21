@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/eval/reports/475532ff080c/retrieval_report.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
