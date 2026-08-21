@@ -1,0 +1,30 @@
+global:
+  output_dir: "eval/reports"
+  log_level: "INFO"
+  seed: 42
+
+retrieval:
+  k: 3
+  score_threshold: 0.3
+  alpha: 0.6
+  search_type: "weighted"
+
+generation:
+  k: 3
+  score_threshold: 0.0
+  limit: null
+
+ab_testing:
+  configs:
+    - name: "base"
+      chunk_size: 800
+      chunk_overlap: 120
+      embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+      k: 3
+      score_threshold: 0.0
+    - name: "small_chunks"
+      chunk_size: 400
+      chunk_overlap: 80
+      embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+      k: 3
+      score_threshold: 0.0
