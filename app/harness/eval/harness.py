@@ -25,6 +25,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # retrieval subcommand
     retrieval_parser = subparsers.add_parser("retrieval", help="Run retrieval evaluation")
+    retrieval_parser.add_argument("--config", default=None, help="Path to evaluation config YAML file (overrides global)")
     retrieval_parser.add_argument("--k", type=int, default=None, help="Number of documents to retrieve")
     retrieval_parser.add_argument("--score-threshold", type=float, default=None, help="Minimum relevance score")
     retrieval_parser.add_argument("--search-type", type=str, default=None, choices=["weighted", "rrf", "two_stage"])
@@ -33,6 +34,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # generation subcommand
     generation_parser = subparsers.add_parser("generation", help="Run generation evaluation")
+    generation_parser.add_argument("--config", default=None, help="Path to evaluation config YAML file (overrides global)")
     generation_parser.add_argument("--k", type=int, default=None, help="Number of documents to retrieve")
     generation_parser.add_argument("--score-threshold", type=float, default=None, help="Minimum relevance score")
     generation_parser.add_argument("--limit", type=int, default=None, help="Limit number of queries evaluated")
@@ -40,6 +42,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # ab subcommand
     ab_parser = subparsers.add_parser("ab", help="Run A/B testing")
+    ab_parser.add_argument("--config", default=None, help="Path to evaluation config YAML file (overrides global)")
     ab_parser.add_argument("--output-dir", type=str, default=None, help="Output directory (overrides config)")
 
     return parser
@@ -79,7 +82,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        loader = ConfigLoader(args.config)
+        subparser_config = getattr(args, "config", None)
+        config_path = subparser_config if subparser_config is not None else parser.get_default("config")
+        loader = ConfigLoader(config_path)
         config = loader.load_and_validate(EVAL_CONFIG_SCHEMA)
         config = _merge_cli_overrides(config, args)
 
