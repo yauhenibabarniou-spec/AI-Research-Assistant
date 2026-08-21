@@ -1,6 +1,8 @@
-import json
 from pathlib import Path
 
+from langchain_core.documents import Document
+
+from app.common.utils import chunk_id
 from app.rag.embeddings import Embeddings
 from app.rag.stores.chroma import ChromaStore
 
@@ -25,8 +27,6 @@ for doc_file in ["sql_basics.txt", "git_workflow.txt", "docker_basics.txt", "asy
         idx = list(store.vectorstore._collection.get()["documents"]).index(chunk)
         meta = metas[idx] if metas and idx < len(metas) else {}
         if meta.get("source", "").endswith(doc_file):
-            from app.common.utils import chunk_id
-            from langchain_core.documents import Document
             cid = chunk_id(Document(page_content=chunk, metadata=meta))
             preview = chunk[:120].replace("\n", " ")
             print(f"{cid}\n  {preview}\n")

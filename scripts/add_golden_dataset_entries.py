@@ -1,5 +1,9 @@
 import json
+import logging
 from pathlib import Path
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 project_root = Path(__file__).resolve().parents[1]
 golden_dataset_path = project_root / "eval" / "golden_dataset.json"
@@ -239,4 +243,4 @@ dataset.extend(new_entries)
 with open(golden_dataset_path, "w", encoding="utf-8") as f:
     json.dump(dataset, f, ensure_ascii=False, indent=2)
 
-print(f"Added {len(new_entries)} entries. Total: {len(dataset)}")
+logger.info("Added %d entries. Total: %d", len(new_entries), len(dataset))

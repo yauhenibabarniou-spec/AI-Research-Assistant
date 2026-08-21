@@ -1,5 +1,9 @@
 import json
+import logging
 from pathlib import Path
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 project_root = Path(__file__).resolve().parents[1]
 golden_dataset_path = project_root / "eval" / "golden_dataset.json"
@@ -18,7 +22,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "easy",
-        "category": "general"
+        "category": "general",
     },
     {
         "id": "docker_002",
@@ -29,7 +33,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "easy",
-        "category": "concepts"
+        "category": "concepts",
     },
     {
         "id": "docker_003",
@@ -37,11 +41,11 @@ new_entries = [
         "expected_answer": "Dockerfile — текстовый документ с командами для сборки образа. Содержит FROM, RUN, COPY, CMD, EXPOSE и другие инструкции.",
         "expected_chunk_ids": [
             "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:4200:72535d670ab8e7a2",
-            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:4256:d8beebb4a7d84e82"
+            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:4256:d8beebb4a7d84e82",
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "easy",
-        "category": "dockerfile"
+        "category": "dockerfile",
     },
     {
         "id": "docker_004",
@@ -49,11 +53,11 @@ new_entries = [
         "expected_answer": "Установка: sudo apt update, установка зависимостей, добавление GPG-ключа Docker, добавление репозитория, sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin, добавление пользователя в группу docker.",
         "expected_chunk_ids": [
             "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:1557:e0debfae833f72d5",
-            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:2187:fdef1cd1c5adcb4c"
+            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/docker_basics.txt:2187:fdef1cd1c5adcb4c",
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "installation"
+        "category": "installation",
     },
     {
         "id": "docker_005",
@@ -64,7 +68,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "easy",
-        "category": "compose"
+        "category": "compose",
     },
     {
         "id": "docker_006",
@@ -75,7 +79,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "networking"
+        "category": "networking",
     },
     {
         "id": "docker_007",
@@ -86,7 +90,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "storage"
+        "category": "storage",
     },
     {
         "id": "docker_008",
@@ -97,7 +101,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "orchestration"
+        "category": "orchestration",
     },
     {
         "id": "docker_009",
@@ -108,7 +112,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "security"
+        "category": "security",
     },
     {
         "id": "docker_010",
@@ -119,7 +123,7 @@ new_entries = [
         ],
         "source_doc": "docker_basics.txt",
         "difficulty": "medium",
-        "category": "optimization"
+        "category": "optimization",
     },
     # Async Python
     {
@@ -131,7 +135,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "easy",
-        "category": "general"
+        "category": "general",
     },
     {
         "id": "async_002",
@@ -142,7 +146,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "medium",
-        "category": "core"
+        "category": "core",
     },
     {
         "id": "async_003",
@@ -153,7 +157,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "easy",
-        "category": "core"
+        "category": "core",
     },
     {
         "id": "async_004",
@@ -161,11 +165,11 @@ new_entries = [
         "expected_answer": "async def объявляет корутину. await приостанавливает выполнение до завершения асинхронной операции без блокировки event loop.",
         "expected_chunk_ids": [
             "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:1492:3e870d075931414a",
-            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:2162:43b05297398c0961"
+            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:2162:43b05297398c0961",
         ],
         "source_doc": "async_python.txt",
         "difficulty": "easy",
-        "category": "syntax"
+        "category": "syntax",
     },
     {
         "id": "async_005",
@@ -176,7 +180,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "medium",
-        "category": "concurrency"
+        "category": "concurrency",
     },
     {
         "id": "async_006",
@@ -187,7 +191,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "easy",
-        "category": "libraries"
+        "category": "libraries",
     },
     {
         "id": "async_007",
@@ -198,7 +202,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "medium",
-        "category": "synchronization"
+        "category": "synchronization",
     },
     {
         "id": "async_008",
@@ -209,7 +213,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "medium",
-        "category": "concurrency"
+        "category": "concurrency",
     },
     {
         "id": "async_009",
@@ -220,7 +224,7 @@ new_entries = [
         ],
         "source_doc": "async_python.txt",
         "difficulty": "medium",
-        "category": "error_handling"
+        "category": "error_handling",
     },
     {
         "id": "async_010",
@@ -228,11 +232,11 @@ new_entries = [
         "expected_answer": "Rate Limiter ограничивает количество одновременных запросов. Реализуется через семафоры или токены. Пример: класс RateLimiter с методом acquire().",
         "expected_chunk_ids": [
             "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:10494:f94f93f394ec7e87",
-            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:11188:2cb3e7d0a14c4369"
+            "/home/yevgeniy/PycharmProjects/AI-Research-Assistant/knowledge_base/async_python.txt:11188:2cb3e7d0a14c4369",
         ],
         "source_doc": "async_python.txt",
         "difficulty": "hard",
-        "category": "patterns"
+        "category": "patterns",
     },
     # Testing Python
     {
@@ -244,7 +248,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "easy",
-        "category": "frameworks"
+        "category": "frameworks",
     },
     {
         "id": "testing_002",
@@ -255,7 +259,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "easy",
-        "category": "fixtures"
+        "category": "fixtures",
     },
     {
         "id": "testing_003",
@@ -266,7 +270,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "medium",
-        "category": "parametrization"
+        "category": "parametrization",
     },
     {
         "id": "testing_004",
@@ -277,7 +281,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "medium",
-        "category": "mocking"
+        "category": "mocking",
     },
     {
         "id": "testing_005",
@@ -288,7 +292,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "medium",
-        "category": "exceptions"
+        "category": "exceptions",
     },
     {
         "id": "testing_006",
@@ -299,7 +303,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "easy",
-        "category": "coverage"
+        "category": "coverage",
     },
     {
         "id": "testing_007",
@@ -310,7 +314,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "medium",
-        "category": "web_testing"
+        "category": "web_testing",
     },
     {
         "id": "testing_008",
@@ -321,7 +325,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "medium",
-        "category": "async_testing"
+        "category": "async_testing",
     },
     {
         "id": "testing_009",
@@ -332,7 +336,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "easy",
-        "category": "methodology"
+        "category": "methodology",
     },
     {
         "id": "testing_010",
@@ -343,7 +347,7 @@ new_entries = [
         ],
         "source_doc": "testing_python.txt",
         "difficulty": "easy",
-        "category": "best_practices"
+        "category": "best_practices",
     },
 ]
 
@@ -352,4 +356,4 @@ dataset.extend(new_entries)
 with open(golden_dataset_path, "w", encoding="utf-8") as f:
     json.dump(dataset, f, ensure_ascii=False, indent=2)
 
-print(f"Added {len(new_entries)} entries. Total: {len(dataset)}")
+logger.info("Added %d entries. Total: %d", len(new_entries), len(dataset))
