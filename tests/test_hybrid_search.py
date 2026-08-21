@@ -7,17 +7,6 @@ from langchain_core.documents import Document
 from app.rag.stores.hybrid import BM25Index, HybridStore
 
 
-@pytest.fixture
-def sample_documents():
-    """Sample documents for testing."""
-    return [
-        Document(page_content="ChromaDB is a vector database for embeddings", metadata={"source": "chromadb.txt", "start_index": 0}),
-        Document(page_content="FastAPI is a modern web framework for Python", metadata={"source": "fastapi.txt", "start_index": 100}),
-        Document(page_content="LangChain is a framework for building LLM applications", metadata={"source": "langchain.txt", "start_index": 200}),
-        Document(page_content="Python is a programming language", metadata={"source": "python.txt", "start_index": 300}),
-    ]
-
-
 class TestBM25Index:
     """Tests for BM25Index."""
 
@@ -39,7 +28,6 @@ class TestBM25Index:
         index = BM25Index(sample_documents)
         results = index.search("ChromaDB", k=2)
         assert len(results) >= 1
-        # First result should contain ChromaDB
         first_doc, _ = results[0]
         assert "ChromaDB" in first_doc.page_content
 
@@ -59,7 +47,7 @@ class TestBM25Index:
 class TestHybridStore:
     """Tests for HybridStore."""
 
-    def test_from_chroma_store_initialization(self, sample_documents, monkeypatch, caplog):
+    def test_from_chroma_store_initialization(self, sample_documents, caplog):
         """Test HybridStore initialization from ChromaStore."""
         from app.rag.stores.hybrid import HybridStore
 
@@ -94,7 +82,7 @@ class TestHybridStore:
         assert len(hybrid.bm25_index.documents) == 4
         assert "Hybrid search initialized" in caplog.text
 
-    def test_get_relevant_documents_fallback(self, sample_documents, monkeypatch):
+    def test_get_relevant_documents_fallback(self, sample_documents):
         """Test fallback to vector search when BM25 index is missing."""
         from app.rag.stores.hybrid import HybridStore
 
@@ -120,7 +108,7 @@ class TestHybridStore:
         assert len(results) == 1
         assert results[0][0].page_content == "ChromaDB is a vector database for embeddings"
 
-    def test_rrf_search_returns_results(self, sample_documents, monkeypatch):
+    def test_rrf_search_returns_results(self, sample_documents, caplog):
         """Test RRF search returns results."""
         from app.rag.stores.hybrid import HybridStore
 
@@ -154,7 +142,6 @@ class TestHybridStore:
                 return len(sample_documents)
 
             def get_relevant_documents(self, query, k=3, score_threshold=0.3):
-                # Return mock vector results with varying scores
                 return [
                     (sample_documents[0], 0.9),
                     (sample_documents[1], 0.7),
@@ -167,12 +154,11 @@ class TestHybridStore:
         results = hybrid.get_relevant_documents("ChromaDB vector", k=3)
         assert len(results) > 0
         assert all(isinstance(r, tuple) for r in results)
-        # Scores should be RRF scores (sum of reciprocal ranks)
         for _, score in results:
             assert score > 0
             assert not math.isinf(score)
 
-    def test_two_stage_search_returns_results(self, sample_documents, monkeypatch):
+    def test_two_stage_search_returns_results(self, sample_documents, caplog):
         """Test two-stage search returns results."""
         from app.rag.stores.hybrid import HybridStore
 
@@ -218,7 +204,7 @@ class TestHybridStore:
         assert len(results) > 0
         assert all(isinstance(r, tuple) for r in results)
 
-    def test_weighted_search_returns_results(self, sample_documents, monkeypatch):
+    def test_weighted_search_returns_results(self, sample_documents, caplog):
         """Test weighted search returns results."""
         from app.rag.stores.hybrid import HybridStore
 
@@ -265,6 +251,5 @@ class TestHybridStore:
         results = hybrid.get_relevant_documents("ChromaDB vector", k=3)
         assert len(results) > 0
         assert all(isinstance(r, tuple) for r in results)
-        # Scores should be weighted combination
         for _, score in results:
             assert 0.0 <= score <= 1.0

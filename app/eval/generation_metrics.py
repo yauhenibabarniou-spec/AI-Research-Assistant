@@ -88,16 +88,22 @@ def run_generation_eval(
     score_threshold: float = 0.0,
     output_path: str = "eval/reports/generation_report.json",
     limit: int | None = 5,
+    chunk_size: int | None = None,
+    chunk_overlap: int | None = None,
 ) -> dict[str, Any]:
+    from app.core.config import settings
+
     project_root = Path(__file__).resolve().parents[2]
     dataset = GoldenDataset(project_root / "eval" / "golden_dataset.json")
     embeddings = Embeddings()
+    _chunk_size = chunk_size if chunk_size is not None else settings.chunk_size
+    _chunk_overlap = chunk_overlap if chunk_overlap is not None else settings.chunk_overlap
     vector_manager = ChromaStore(
         persist_directory=str(project_root / "chroma_db"),
         embedding_function=embeddings.get_embeddings(),
         knowledge_base_dir=str(project_root / "knowledge_base"),
-        chunk_size=800,
-        chunk_overlap=120,
+        chunk_size=_chunk_size,
+        chunk_overlap=_chunk_overlap,
         collection_name="documents",
     )
     vector_manager.index_documents()
